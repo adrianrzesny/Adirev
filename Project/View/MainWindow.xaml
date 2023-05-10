@@ -1,0 +1,187 @@
+﻿<Window x:Class="Adirev.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mw="clr-namespace:Adirev.ViewModel" xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d" 
+        Title="Adirev" Height="800" Width="1200">
+    <Behaviors:Interaction.Triggers>
+        <Behaviors:EventTrigger EventName="Closed">
+            <Behaviors:InvokeCommandAction Command="{Binding SaveLastSesion}" />
+        </Behaviors:EventTrigger>
+    </Behaviors:Interaction.Triggers>
+    <Window.DataContext>
+        <mw:MainWindowViewModel/>
+    </Window.DataContext>    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="75*" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="75*" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="90*" />
+            <RowDefinition Height="5*" />
+        </Grid.RowDefinitions>
+
+        <DockPanel  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5">
+            <Menu DockPanel.Dock="Top" ItemsSource="{Binding MenuItems}">
+                <Menu.ItemContainerStyle>
+                    <Style TargetType="{x:Type MenuItem}">
+                        <Setter Property="Command" Value="{Binding Command}" />
+                    </Style>
+                </Menu.ItemContainerStyle>
+                <Menu.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type mw:MenuItemViewModel}" ItemsSource="{Binding Path=MenuItems}">
+                        <TextBlock Text="{Binding Header}"/>
+                    </HierarchicalDataTemplate>
+                </Menu.ItemTemplate>
+            </Menu>
+        </DockPanel>
+            
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="50*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="75*" />
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label Content="System" Grid.Row="0" Grid.Column="1" />
+            <ComboBox Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,5,0,5" SelectedItem="{Binding SystemDataBaseSelected, Mode=TwoWay}" ItemsSource="{Binding Systems}" />
+
+            <Label Content="Server" Grid.Row="1" Grid.Column="1" />
+            <TextBox Grid.Row="1" Grid.Column="3" Margin="0,5,0,5" Text="{Binding Server}" IsEnabled="{Binding ServerIsEnabled}" />
+            <Button Grid.Row="1" Grid.Column="4" Margin="0,5,0,5" Content="{Binding ServerButtonChar}" Command="{Binding LoadDatabases}" IsEnabled="{Binding ServerIsEnabled}" />
+
+            <Label Content="Database" Grid.Row="2" Grid.Column="1" />
+            <ComboBox Grid.Row="2" Grid.Column="3" Margin="0,5,0,5" Grid.ColumnSpan="2" ItemsSource="{Binding EntitiesDataBase}" SelectedItem="{Binding EntityDataBaseSelected}" IsEnabled="{Binding DatabaseIsEnabled}" >
+                <Behaviors:Interaction.Triggers>
+                    <Behaviors:EventTrigger EventName="SelectionChanged">
+                        <Behaviors:InvokeCommandAction Command="{Binding LoadDatabaseItems}" />
+                    </Behaviors:EventTrigger>
+                </Behaviors:Interaction.Triggers>
+            </ComboBox>
+
+            <Label Content="Path save" Grid.Row="3" Grid.Column="1" />
+            <TextBox Grid.Row="3" Grid.Column="3" Margin="0,5,0,5" Text="{Binding Path}" IsEnabled="{Binding PathIsEnabled}" />
+            <Button Grid.Row="3" Grid.Column="4" Margin="0,5,0,5" Content="..." Command="{Binding LoadPath}" IsEnabled="{Binding PathIsEnabled}" />
+
+            <Button Grid.Row="5" Grid.Column="1" Margin="5,5,5,5" Content="Export SQL Script" Grid.ColumnSpan="4" Command="{Binding SaveScripts}"/>
+
+        </Grid>
+        <TabControl TabStripPlacement="Top" Grid.Row="2" Grid.Column="3">
+            <TabItem Header="{Binding TIFunctionsName}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="25" />
+                    </Grid.RowDefinitions>
+                    <ListBox ItemsSource="{Binding DatabaseFunctions, Mode=TwoWay}" Grid.ColumnSpan="2">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel  Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                    <TextBlock Text="{Binding Name}" Foreground="Blue" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedFunctions}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllFunction}" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="{Binding TIProceduresName}" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="25" />
+                    </Grid.RowDefinitions>
+                    <ListBox ItemsSource="{Binding DatabaseProcedures, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel  Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                    <TextBlock Text="{Binding Name}" Foreground="Blue" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedProcedures}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllProcedures}" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="{Binding TITablesName}" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="25" />
+                    </Grid.RowDefinitions>
+                    <ListBox ItemsSource="{Binding DatabaseTables, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel  Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                    <TextBlock Text="{Binding Name}" Foreground="Blue" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTables}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTables}" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="{Binding TITriggersName}" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="25" />
+                    </Grid.RowDefinitions>
+                    <ListBox ItemsSource="{Binding DatabaseTriggers, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel  Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                    <TextBlock Text="{Binding Name}" Foreground="Blue" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTriggers}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTriggers}" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="{Binding TIViewsName}" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="25" />
+                    </Grid.RowDefinitions>
+                    <ListBox ItemsSource="{Binding DatabaseViews, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel  Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                    <TextBlock Text="{Binding Name}" Foreground="Blue" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedViews}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllViews}" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

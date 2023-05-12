@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mw="clr-namespace:Adirev.ViewModel" xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
-        mc:Ignorable="d" 
+        mc:Ignorable="d" IsEnabled="{Binding IsEnabledWindow}"
         Title="Adirev" Height="800" Width="1200">
     <Behaviors:Interaction.Triggers>
         <Behaviors:EventTrigger EventName="Closed">
@@ -70,8 +70,8 @@
             <TextBox Grid.Row="1" Grid.Column="3" Margin="0,5,0,5" Text="{Binding Server}" IsEnabled="{Binding ServerIsEnabled}" />
             <Button Grid.Row="1" Grid.Column="4" Margin="0,5,0,5" Content="{Binding ServerButtonChar}" Command="{Binding LoadDatabases}" IsEnabled="{Binding ServerIsEnabled}" />
 
-            <Label Content="Database" Grid.Row="2" Grid.Column="1" />
-            <ComboBox Grid.Row="2" Grid.Column="3" Margin="0,5,0,5" Grid.ColumnSpan="2" ItemsSource="{Binding EntitiesDataBase}" SelectedItem="{Binding EntityDataBaseSelected}" IsEnabled="{Binding DatabaseIsEnabled}" >
+            <Label Content="Database" Grid.Row="2" Grid.Column="1" Visibility="{Binding EntitiesDataBaseVisibility}" />
+            <ComboBox Grid.Row="2" Grid.Column="3" Margin="0,5,0,5" Grid.ColumnSpan="2" ItemsSource="{Binding EntitiesDataBase}" SelectedItem="{Binding EntityDataBaseSelected}" IsEnabled="{Binding DatabaseIsEnabled}"  Visibility="{Binding EntitiesDataBaseVisibility}" >
                 <Behaviors:Interaction.Triggers>
                     <Behaviors:EventTrigger EventName="SelectionChanged">
                         <Behaviors:InvokeCommandAction Command="{Binding LoadDatabaseItems}" />
@@ -86,7 +86,7 @@
             <Button Grid.Row="5" Grid.Column="1" Margin="5,5,5,5" Content="Export SQL Script" Grid.ColumnSpan="4" Command="{Binding SaveScripts}"/>
 
         </Grid>
-        <TabControl TabStripPlacement="Top" Grid.Row="2" Grid.Column="3">
+        <TabControl TabStripPlacement="Top" Grid.Row="2" Grid.Column="3" Visibility="{Binding ItemsDataBaseVisibility}" >
             <TabItem Header="{Binding TIFunctionsName}">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -183,5 +183,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
+        <ProgressBar Visibility="{Binding ProgressBarVisibility}" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,5,0,5" IsIndeterminate="True" />
+        <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Content="{Binding TextLog}" Margin="0,5,0,5"/>
     </Grid>
 </Window>

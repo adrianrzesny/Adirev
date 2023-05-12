@@ -6,6 +6,7 @@ using System.Text;
 namespace Adirev.ViewModel
 {
     using System.Collections.ObjectModel;
+    using System.Threading.Tasks;
     using System.Windows.Controls;
     using System.Windows.Input;
     using Adirev.Class;
@@ -18,6 +19,24 @@ namespace Adirev.ViewModel
         #endregion
 
         #region Properties
+        public bool IsEnabledWindow
+        {
+            get => model.IsEnabledWindow;
+            set
+            {
+                model.IsEnabledWindow = value;
+                OnPropertyChanged(nameof(IsEnabledWindow));
+            }
+        }
+        public System.Windows.Visibility ProgressBarVisibility
+        {
+            get => model.ProgressBarVisibility;
+            set
+            {
+                model.ProgressBarVisibility = value;
+                OnPropertyChanged(nameof(ProgressBarVisibility));
+            }
+        }
         public ObservableCollection<object> MenuItems
         {
             get => model.MenuItems;
@@ -39,6 +58,7 @@ namespace Adirev.ViewModel
         }
 
         public string ServerButtonChar { get => model.ServerButtonChar; }
+        public string TextLog { get => model.TextLog; }
 
         public bool DatabaseIsEnabled
         {
@@ -251,7 +271,16 @@ namespace Adirev.ViewModel
                 OnPropertyChanged(nameof(IsCheckedViews));
             }
         }
-
+        public System.Windows.Visibility ItemsDataBaseVisibility 
+        {
+            get => model.ItemsDataBaseVisibility;
+            set => model.ItemsDataBaseVisibility = value;
+        }
+        public System.Windows.Visibility EntitiesDataBaseVisibility
+        {
+            get => model.EntitiesDataBaseVisibility;
+            set => model.EntitiesDataBaseVisibility = value;
+        }
         #endregion
 
         #region Constructor 
@@ -273,6 +302,7 @@ namespace Adirev.ViewModel
             model.StatusCheckedViewsChanged += RefreshCheckboxSelectionAllViews;
 
             model.ClickMenuItem += Refresh;
+            model.ProgressBarVisibilityChanged += RefreshVisibleProgressBar;
         }
         #endregion
 
@@ -292,6 +322,14 @@ namespace Adirev.ViewModel
             OnPropertyChanged(nameof(DatabaseTriggers));
             OnPropertyChanged(nameof(DatabaseViews));
             OnPropertyChanged(nameof(MenuItems));
+            OnPropertyChanged(nameof(ItemsDataBaseVisibility));
+            OnPropertyChanged(nameof(EntitiesDataBaseVisibility));
+        }
+
+        private void RefreshVisibleProgressBar()
+        {
+            OnPropertyChanged(nameof(ProgressBarVisibility));
+            OnPropertyChanged(nameof(IsEnabledWindow));
         }
 
         private void RefreshCheckboxSelectionAllViews()
@@ -499,10 +537,17 @@ namespace Adirev.ViewModel
 
             get
             {
-                if (saveScripts == null) saveScripts = new RelayCommand((object o) =>
+                if (saveScripts == null) saveScripts = new RelayCommand(async (object o) =>
                 {
-                    model.SaveScripts();
-                    OnPropertyChanged(nameof(MenuItems));
+                    Task.Run(() =>
+                    {
+                        model.SetVisibleProgressBar(true);
+                        OnPropertyChanged(nameof(ProgressBarVisibility));
+
+                        model.SaveScripts();
+                        OnPropertyChanged(nameof(MenuItems));
+                        OnPropertyChanged(nameof(ProgressBarVisibility));
+                    });
                 });
 
                 return saveScripts;

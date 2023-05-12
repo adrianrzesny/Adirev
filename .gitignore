@@ -391,3 +391,17 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/_Output/PWN.EOD2.exe
+/_Output/PWN.EOD2.pdb
+/_Output/PWN.Multibook.Common.UI.Base.WPF.dll
+/_Output/PWN.Multibook.Common.UI.Base.WPF.pdb
+/_Output/PWN.Multibook.dll
+/_Output/PWN.Multibook.pdb
+/_Output/PWN.Multibook.EODPWN.DataLayer.dll
+/_Output/PWN.Multibook.EODPWN.DataLayer.pdb
+/_Output/PWN.Multibook.EODPWN.dll
+/_Output/PWN.Multibook.EODPWN.Engine.Base.dll
+/_Output/PWN.Multibook.EODPWN.Engine.Base.pdb
+/_Output/PWN.Multibook.EODPWN.pdb
+/_Output/PWN.Multibook.EODPWN.UI.Base.dll
+/_Output/PWN.Multibook.EODPWN.UI.Base.pdb

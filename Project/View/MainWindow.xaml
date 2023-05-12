@@ -184,6 +184,12 @@
             </TabItem>
         </TabControl>
         <ProgressBar Visibility="{Binding ProgressBarVisibility}" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,5,0,5" IsIndeterminate="True" />
-        <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Content="{Binding TextLog}" Margin="0,5,0,5"/>
+        <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Content="{Binding TextLog}" Margin="0,5,0,5" >
+            <Behaviors:Interaction.Triggers>
+                <Behaviors:EventTrigger EventName="MouseDoubleClick">
+                    <Behaviors:InvokeCommandAction Command="{Binding OpenLogWindow}" />
+                </Behaviors:EventTrigger>
+            </Behaviors:Interaction.Triggers>
+        </Label>
     </Grid>
 </Window>

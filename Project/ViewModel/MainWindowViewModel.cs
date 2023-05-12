@@ -403,6 +403,7 @@ namespace Adirev.ViewModel
         private ICommand loadPath;
         private ICommand saveScripts;
         private ICommand saveLastSesion;
+        private ICommand openLogWindow;
         #endregion
 
         #region Public Command
@@ -577,6 +578,18 @@ namespace Adirev.ViewModel
             }
         }
 
+        public ICommand OpenLogWindow
+        {
+            get
+            {
+                if (openLogWindow == null) openLogWindow = new RelayCommand((object o) =>
+                {
+                    model.OpenLogWindow();
+                });
+
+                return openLogWindow;
+            }
+        }
         #endregion
     }
 }

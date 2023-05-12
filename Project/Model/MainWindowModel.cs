@@ -11,6 +11,7 @@ using Adirev.Model;
 using Adirev.Service;
 using Adirev.ViewModel;
 using System.Threading.Tasks;
+using Adirev.View;
 
 namespace Adirev.Models
 {
@@ -86,7 +87,7 @@ namespace Adirev.Models
         }
         public string TextLog
         {
-            get => LoggerApplication.LogOperacion;
+            get => LoggerApplication.LogOperacion?.Substring(0, (LoggerApplication.LogOperacion.Length > 250 ? 250 : LoggerApplication.LogOperacion.Length));
             set => LoggerApplication.AddLog(value);
         }
         public string TIFunctionsName
@@ -264,14 +265,18 @@ namespace Adirev.Models
 
         private void LoadMenuItem()
         {
-            #region Menu item delete history
             ObservableCollection<object> historyItems = new ObservableCollection<object>();
-            try
+
+            #region Menu item history
+            var listDirectories = FileManager.GetDirectories(ApplicationSession.PathHistoryApplication);
+            foreach (var item in listDirectories)
             {
-                historyItems.Add(new MenuItemViewModel(DeleteHistory, MenuItemClickInvoke) { Header = "Clear history" });
+                string pathFileSession = @$"{ApplicationSession.PathHistoryApplication}\{item}\{item}.{ApplicationSession.Extension}";
+                historyItems.Add(new MenuItemViewModel(LoadSession, MenuItemClickInvoke, pathFileSession) { Header = item });
             }
-            catch (Exception ex)
-            { }
+
+            if (listDirectories?.Count == 0)
+            { historyItems.Add(new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "History empty" }); }
             #endregion
 
             #region Menu item separator
@@ -281,19 +286,18 @@ namespace Adirev.Models
             { }
             #endregion
 
-            #region Menu item history session
+            #region Menu item delete history
             try
             {
-                var listDirectories = FileManager.GetDirectories(ApplicationSession.PathHistoryApplication);
-                foreach (var item in listDirectories)
-                {
-                    string pathFileSession = @$"{ApplicationSession.PathHistoryApplication}\{item}\{item}.{ApplicationSession.Extension}";
-                    historyItems.Add(new MenuItemViewModel(LoadSession, MenuItemClickInvoke, pathFileSession) { Header = item });
-                }
+                historyItems.Add(new MenuItemViewModel(DeleteHistory, MenuItemClickInvoke) { Header = "Clear history" });
+            }
+            catch (Exception ex)
+            { }
+            #endregion
 
-                if (listDirectories?.Count == 0)
-                { historyItems.Add(new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "History empty" }); }
-
+            #region Menu item 
+            try
+            {
                 MenuItems = new ObservableCollection<object>
                 {
                     new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "Mode" ,
@@ -306,6 +310,13 @@ namespace Adirev.Models
                     new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "History",
                         MenuItems = historyItems
                     },
+                    new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "Logs" ,
+                        MenuItems = new ObservableCollection<object>
+                        {
+                            new MenuItemViewModel(OpenLogWindow, MenuItemClickInvoke) { Header = "Show logs" },
+                            new MenuItemViewModel(ClearLogs, MenuItemClickInvoke) { Header = "Clear logs" }
+                        }
+                    }
                 };
             }
             catch (Exception ex)
@@ -469,6 +480,10 @@ namespace Adirev.Models
             TIViewsName = $"Views {DatabaseViews.Where(x => x.IsSelected).Count()}/{DatabaseViews.Count}";
             IsCheckedViews = DatabaseViews.Where(x => x.IsSelected).Count() == DatabaseViews.Count;
         }
+        private void ClearLogs()
+        {
+            LoggerApplication.ClearLogs();
+        }
 
         #endregion
 
@@ -560,6 +575,12 @@ namespace Adirev.Models
             string path = @$"{ApplicationSession.PathHistoryApplication}\lastsesion.{ApplicationSession.Extension}";
 
             FileManager.WriteToBinaryFile<ApplicationSession>(path, applicationSession);
+        }
+
+        public void OpenLogWindow()
+        {
+            LogWindow lw = new LogWindow();
+            lw.ShowDialog();
         }
 
         #endregion

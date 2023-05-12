@@ -46,7 +46,12 @@ namespace Adirev.Model
         #region Public Method
         public void AddLog(string log)
         {
-            LogOperacion = $"{log}\n{LogOperacion}";
+            LogOperacion = $"[{DateTime.Now}] {log}\n{LogOperacion}";
+        }
+
+        public void ClearLogs()
+        {
+            LogOperacion = string.Empty;
         }
         #endregion
     }

@@ -9,6 +9,10 @@ namespace Adirev.Service
 {
     class MSDatabase : IDatabase
     {
+        #region Objects
+        private Logger LoggerApplication { get; } = Logger.Instance;
+        #endregion
+
         #region Public Methods
         public List<string> GetDatabases(ServerManager server)
         {
@@ -105,7 +109,7 @@ namespace Adirev.Service
             return databaseItems;
         }
 
-        public List<DatabaseItem> GetItemsContents(DatabaseManager.TypeScript type, DatabaseManager database, DatabaseManager.OpcionExport opcionExport, List<string> downloadList = null)
+        public List<DatabaseItem> GetItemsContents(DatabaseManager.TypeScript type, DatabaseManager database, DatabaseManager.OpcionExport opcionExport, List<string> listToDownload = null)
         {
             List<DatabaseItem> listItemsContents = new List<DatabaseItem>();
             SqlConnection conn;
@@ -144,17 +148,25 @@ namespace Adirev.Service
                             string name_item = reader["schema_name"].ToString() + "." + reader["name"].ToString();
                             string content = reader["proc_definition"].ToString();
 
-                            var is_export = downloadList?.Contains(name_item);
+                            var is_export = listToDownload?.Contains(name_item);
                             is_export = opcionExport == DatabaseManager.OpcionExport.ALL ? true : is_export;
 
                             if (is_export == true)
-                            { listItemsContents.Add(new DatabaseItem() { Name = name_item, Contents = content }); }
+                            {
+                                LoggerApplication.AddLog($"Export ( {database.Server}.{database.DatabaseEntity}->{DatabaseManager.GetNameTypeScript(type)} {name_item} )");
+                                listItemsContents.Add(new DatabaseItem() { Name = name_item, Contents = content });
+                            }
                         }
                     }
                 }
                 else
                 {
-                    List<string> tables = GetItems(DatabaseManager.TypeScript.U, database);
+                    List<string> tables = new List<string>();
+
+                    if (opcionExport == DatabaseManager.OpcionExport.ALL)
+                    { tables = GetItems(DatabaseManager.TypeScript.U, database); }
+                    else
+                    { tables = listToDownload; }
 
                     foreach (var tableName in tables)
                     {
@@ -380,12 +392,8 @@ namespace Adirev.Service
                                 string name_item = reader["name"].ToString();
                                 string content = reader["table_definition"].ToString();
 
-                                var is_export = downloadList?.Contains(name_item);
-
-                                if (is_export == true || opcionExport == DatabaseManager.OpcionExport.ALL)
-                                {
-                                    listItemsContents.Add(new DatabaseItem() { Name = name_item, Contents = content });
-                                }
+                                LoggerApplication.AddLog($"Export ( {database.Server}.{database.DatabaseEntity}->{DatabaseManager.GetNameTypeScript(type)} {name_item} )");
+                                listItemsContents.Add(new DatabaseItem() { Name = name_item, Contents = content });
                             }
                         }
                     }

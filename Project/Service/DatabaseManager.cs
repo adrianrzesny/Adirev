@@ -38,6 +38,25 @@ namespace Adirev.Service
         #endregion
 
         #region Public Methods
+        public static string GetNameTypeScript(DatabaseManager.TypeScript type)
+        {
+            switch (type)
+            {
+                case DatabaseManager.TypeScript.FN:
+                    return "Functions";
+                case DatabaseManager.TypeScript.TR:
+                    return "Triggers";
+                case DatabaseManager.TypeScript.P:
+                    return "Procedures";
+                case DatabaseManager.TypeScript.V:
+                    return "Views";
+                case DatabaseManager.TypeScript.U:
+                    return "Tables";
+                default:
+                    return "X";
+            }
+        }
+
         public bool LoadItems()
         {
             bool result = true;
@@ -63,7 +82,7 @@ namespace Adirev.Service
             return result;
         }
 
-        public List<DatabaseItem> GetItemsContents(DatabaseManager.TypeScript type, DatabaseManager.OpcionExport opcionExport, List<string> downloadList = null)
+        public List<DatabaseItem> GetItemsContents(DatabaseManager.TypeScript type, DatabaseManager.OpcionExport opcionExport, List<string> listToDownload = null)
         {
             List<DatabaseItem> listDatabaseItem = null;
 
@@ -72,7 +91,7 @@ namespace Adirev.Service
                 IDatabase db = GetDatabaseObject(this.System);
 
                 if (this.DatabaseEntity != null && db != null)
-                { listDatabaseItem = db.GetItemsContents(type, this, opcionExport, downloadList); }
+                { listDatabaseItem = db.GetItemsContents(type, this, opcionExport, listToDownload); }
             }
             catch (Exception ex)
             { }

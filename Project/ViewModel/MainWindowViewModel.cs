@@ -10,6 +10,7 @@ namespace Adirev.ViewModel
     using System.Windows.Controls;
     using System.Windows.Input;
     using Adirev.Class;
+    using Adirev.Model;
     using Adirev.Models;
 
     public class MainWindowViewModel : NotifyPropertyChanged
@@ -19,6 +20,10 @@ namespace Adirev.ViewModel
         #endregion
 
         #region Properties
+        public string ServerButtonChar { get => model.ServerButtonChar; }
+        public string TextLog { get => model.TextLog; }
+        public Logger LoggerApplication { get => model.LoggerApplication; }
+
         public bool IsEnabledWindow
         {
             get => model.IsEnabledWindow;
@@ -56,9 +61,6 @@ namespace Adirev.ViewModel
                 OnPropertyChanged(nameof(ServerIsEnabled));
             }
         }
-
-        public string ServerButtonChar { get => model.ServerButtonChar; }
-        public string TextLog { get => model.TextLog; }
 
         public bool DatabaseIsEnabled
         {
@@ -271,7 +273,7 @@ namespace Adirev.ViewModel
                 OnPropertyChanged(nameof(IsCheckedViews));
             }
         }
-        public System.Windows.Visibility ItemsDataBaseVisibility 
+        public System.Windows.Visibility ItemsDataBaseVisibility
         {
             get => model.ItemsDataBaseVisibility;
             set => model.ItemsDataBaseVisibility = value;
@@ -303,6 +305,8 @@ namespace Adirev.ViewModel
 
             model.ClickMenuItem += Refresh;
             model.ProgressBarVisibilityChanged += RefreshVisibleProgressBar;
+
+            LoggerApplication.LogTextChanged += RefreshTextLog;
         }
         #endregion
 
@@ -330,6 +334,11 @@ namespace Adirev.ViewModel
         {
             OnPropertyChanged(nameof(ProgressBarVisibility));
             OnPropertyChanged(nameof(IsEnabledWindow));
+        }
+
+        private void RefreshTextLog()
+        {
+            OnPropertyChanged(nameof(TextLog));
         }
 
         private void RefreshCheckboxSelectionAllViews()

@@ -42,11 +42,28 @@ namespace Adirev.Models
         #endregion
 
         #region Objects
-        private ServerManager ServerDatabase;
+        private ServerManager ServerDatabase { get; set; }
         #endregion
 
         #region Properties
+        public Logger LoggerApplication { get; set; } = Logger.Instance;
         public ModeWindow ModeMainWindow { get; set; }
+        public ObservableCollection<object> MenuItems { get; set; }
+        public bool Connected { get; set; }
+        public bool IsEnabledWindow { get; set; }
+        public bool ServerIsEnabled { get; set; }
+        public bool DatabaseIsEnabled { get; set; }
+        public bool PathIsEnabled { get; set; }
+        public ObservableCollection<CheckBoxItem> DatabaseFunctions { get; set; }
+        public ObservableCollection<CheckBoxItem> DatabaseProcedures { get; set; }
+        public ObservableCollection<CheckBoxItem> DatabaseTables { get; set; }
+        public ObservableCollection<CheckBoxItem> DatabaseTriggers { get; set; }
+        public ObservableCollection<CheckBoxItem> DatabaseViews { get; set; }
+        public string EntityDataBaseSelected { get; set; }
+        public List<string> EntitiesDataBase { get; set; }
+        public List<string> Systems { get => new List<string>() { "Microsoft SQL Server" }; }
+        public string ServerButtonChar { get => Connected == true ? "X" : "⮧"; }
+        public string Path { get; set; }
         public System.Windows.Visibility ProgressBarVisibility
         {
             get => progressBarVisibility;
@@ -67,19 +84,11 @@ namespace Adirev.Models
             get => entitiesDataBaseVisibility;
             set => entitiesDataBaseVisibility = value;
         }
-        public ObservableCollection<object> MenuItems { get; set; }
-        public bool Connected { get; set; }
-        public bool IsEnabledWindow { get; set; }
-        public bool ServerIsEnabled { get; set; }
-        public bool DatabaseIsEnabled { get; set; }
-        public bool PathIsEnabled { get; set; }
-        public string TextLog { get; set; }
-        public ObservableCollection<CheckBoxItem> DatabaseFunctions { get; set; }
-        public ObservableCollection<CheckBoxItem> DatabaseProcedures { get; set; }
-        public ObservableCollection<CheckBoxItem> DatabaseTables { get; set; }
-        public ObservableCollection<CheckBoxItem> DatabaseTriggers { get; set; }
-        public ObservableCollection<CheckBoxItem> DatabaseViews { get; set; }
-
+        public string TextLog
+        {
+            get => LoggerApplication.LogOperacion;
+            set => LoggerApplication.AddLog(value);
+        }
         public string TIFunctionsName
         {
             get => tiFunctionsName;
@@ -185,11 +194,6 @@ namespace Adirev.Models
             get => ServerDatabase.ServerDatabase;
             set => ServerDatabase.ServerDatabase = value;
         }
-        public string EntityDataBaseSelected { get; set; }
-        public List<string> EntitiesDataBase { get; set; }
-        public List<string> Systems { get => new List<string>() { "Microsoft SQL Server" }; }
-        public string ServerButtonChar { get => Connected == true ? "X" : "⮧"; }
-        public string Path { get; set; }
         #endregion
 
         #region Events
@@ -205,6 +209,7 @@ namespace Adirev.Models
         public event MainWindowModelEventHandler StatusCheckedViewsChanged;
         public event MainWindowModelEventHandler ClickMenuItem;
         public event MainWindowModelEventHandler ProgressBarVisibilityChanged;
+        public event MainWindowModelEventHandler TextLogChanged;
         #endregion
 
         #region Constructor
@@ -324,15 +329,17 @@ namespace Adirev.Models
             EntitiesDataBaseVisibility = System.Windows.Visibility.Hidden;
         }
 
-        private void SaveScript(DatabaseManager.TypeScript type, DatabaseManager.OpcionExport opcionExport, string databaseName, List<string> downloadList = null)
+        private void SaveScript(DatabaseManager.TypeScript type, DatabaseManager.OpcionExport opcionExport, string databaseName, List<string> listToDownload = null)
         {
             string path = Path;
 
+            string ItemType = DatabaseManager.GetNameTypeScript(type);
+            LoggerApplication.AddLog($"Export ( {Server}.{databaseName}->{ItemType} )");
 
             DatabaseManager db = ServerDatabase.Databases.Where(x => x.DatabaseEntity == databaseName).FirstOrDefault();
-            if (downloadList?.Count > 0 || opcionExport == DatabaseManager.OpcionExport.ALL)
+            if (listToDownload?.Count > 0 || opcionExport == DatabaseManager.OpcionExport.ALL)
             {
-                List<DatabaseItem> list = db.GetItemsContents(type, opcionExport, downloadList);
+                List<DatabaseItem> list = db.GetItemsContents(type, opcionExport, listToDownload);
 
                 if (opcionExport == DatabaseManager.OpcionExport.ALL)
                 {
@@ -398,6 +405,8 @@ namespace Adirev.Models
             SaveScript(DatabaseManager.TypeScript.V, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseViews.Where(x => x.IsSelected).Select(x => x.Name).ToList());
 
             SetVisibleProgressBar(false);
+            LoggerApplication.AddLog($"Export completed ( {Server}.{EntityDataBaseSelected} -> {Path} )");
+
             SaveCurentSesion();
             LoadMenuItem();
         }
@@ -416,6 +425,7 @@ namespace Adirev.Models
             }
 
             SetVisibleProgressBar(false);
+            LoggerApplication.AddLog($"Export completed ( {Server} -> {Path} )");
         }
 
         private void SaveCurentSesion()

@@ -13,7 +13,7 @@ namespace Adirev.Service
         {
             try
             {
-                System.IO.File.WriteAllText($@"{path}\{GetFolderScript(type)}\{file}.sql", contents);
+                System.IO.File.WriteAllText($@"{path}\{DatabaseManager.GetNameTypeScript(type)}\{file}.sql", contents);
             }
             catch (Exception ex)
             { }
@@ -88,28 +88,6 @@ namespace Adirev.Service
             { }
 
             return list;
-        }
-
-        #endregion
-
-        #region Private Methods
-        private static string GetFolderScript(DatabaseManager.TypeScript type)
-        {
-            switch (type)
-            {
-                case DatabaseManager.TypeScript.FN:
-                    return "Functions";
-                case DatabaseManager.TypeScript.TR:
-                    return "Triggers";
-                case DatabaseManager.TypeScript.P:
-                    return "Procedures";
-                case DatabaseManager.TypeScript.V:
-                    return "Views";
-                case DatabaseManager.TypeScript.U:
-                    return "Tables";
-                default:
-                    return "X";
-            }
         }
 
         #endregion

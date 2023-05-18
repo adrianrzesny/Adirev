@@ -306,6 +306,9 @@ namespace Adirev.ViewModel
             model.ClickMenuItem += Refresh;
             model.ProgressBarVisibilityChanged += RefreshVisibleProgressBar;
 
+            model.EntitiesDataBaseChanged += RefreshEntitiesDataBase;
+            model.EntityDataBaseSelectedChanged += RefreshEntityDataBaseSelected;
+
             LoggerApplication.LogTextChanged += RefreshTextLog;
         }
         #endregion
@@ -313,12 +316,10 @@ namespace Adirev.ViewModel
         #region Private Methods
         private void Refresh()
         {
+            OnPropertyChanged(nameof(Server));
             OnPropertyChanged(nameof(EntitiesDataBase));
             OnPropertyChanged(nameof(EntityDataBaseSelected));
-            OnPropertyChanged(nameof(DatabaseIsEnabled));
-            OnPropertyChanged(nameof(PathIsEnabled));
             OnPropertyChanged(nameof(Path));
-            OnPropertyChanged(nameof(Server));
             OnPropertyChanged(nameof(ServerButtonChar));
             OnPropertyChanged(nameof(DatabaseFunctions));
             OnPropertyChanged(nameof(DatabaseProcedures));
@@ -328,12 +329,24 @@ namespace Adirev.ViewModel
             OnPropertyChanged(nameof(MenuItems));
             OnPropertyChanged(nameof(ItemsDataBaseVisibility));
             OnPropertyChanged(nameof(EntitiesDataBaseVisibility));
+            OnPropertyChanged(nameof(DatabaseIsEnabled));
+            OnPropertyChanged(nameof(PathIsEnabled));
         }
 
         private void RefreshVisibleProgressBar()
         {
             OnPropertyChanged(nameof(ProgressBarVisibility));
             OnPropertyChanged(nameof(IsEnabledWindow));
+        }
+        
+        private void RefreshEntitiesDataBase()
+        {
+            OnPropertyChanged(nameof(EntitiesDataBase));
+        }
+        
+        private void RefreshEntityDataBaseSelected()
+        {
+            OnPropertyChanged(nameof(EntityDataBaseSelected));
         }
 
         private void RefreshTextLog()

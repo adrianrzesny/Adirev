@@ -17,8 +17,9 @@ namespace Adirev.Service
         public List<string> GetDatabases(ServerManager server)
         {
             List<string> listDatabases = new List<string>();
+
             SqlConnection conn;
-            if (server.Login == null)
+            if (String.IsNullOrEmpty(server.Login))
             { conn = new SqlConnection($@"Data Source={server.ServerDatabase};Integrated Security=True"); }
             else
             { conn = new SqlConnection($@"Data Source={server.ServerDatabase};uid = {server.Login};pwd={server.Password}"); }
@@ -45,7 +46,7 @@ namespace Adirev.Service
             }
             catch (Exception ex)
             {
-                new NullReferenceException("Login failed", ex);
+                throw ex;
             }
             finally
             {
@@ -58,9 +59,10 @@ namespace Adirev.Service
         public List<string> GetItems(DatabaseManager.TypeScript type, DatabaseManager database)
         {
             List<string> databaseItems = new List<string>();
+
             SqlConnection conn;
 
-            if (database.Login == null)
+            if (String.IsNullOrEmpty(database.Login))
             { conn = new SqlConnection($@"Data Source={database.Server};Initial Catalog={database.DatabaseEntity};Integrated Security=True"); }
             else
             { conn = new SqlConnection($@"Data Source={database.Server};Initial Catalog={database.DatabaseEntity};uid = {database.Login};pwd={database.Password}"); }
@@ -99,7 +101,7 @@ namespace Adirev.Service
             }
             catch (Exception ex)
             {
-                new NullReferenceException("Login failed", ex);
+                throw ex;
             }
             finally
             {
@@ -112,17 +114,16 @@ namespace Adirev.Service
         public List<DatabaseItem> GetItemsContents(DatabaseManager.TypeScript type, DatabaseManager database, DatabaseManager.OpcionExport opcionExport, List<string> listToDownload = null)
         {
             List<DatabaseItem> listItemsContents = new List<DatabaseItem>();
+
             SqlConnection conn;
 
-            if (database.Login == null)
+            if (String.IsNullOrEmpty(database.Login))
             { conn = new SqlConnection($@"Data Source={database.Server};Initial Catalog={database.DatabaseEntity};Integrated Security=True"); }
             else
             { conn = new SqlConnection($@"Data Source={database.Server};Initial Catalog={database.DatabaseEntity};uid = {database.Login};pwd={database.Password}"); }
 
             if (database.Server.Length == 0)
             { new NullReferenceException("Server name is empty"); }
-
-            conn.Open();
 
             try
             {
@@ -139,6 +140,7 @@ namespace Adirev.Service
                                 + "ORDER BY s.name, o.name ASC 							  ";
 
 
+                    conn.Open();
                     SqlCommand command = new SqlCommand(query, conn);
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -158,6 +160,8 @@ namespace Adirev.Service
                             }
                         }
                     }
+
+                    conn.Close();
                 }
                 else
                 {
@@ -180,8 +184,8 @@ namespace Adirev.Service
                         + "																																				    	    	    	    					  "
                         + "SELECT @object_name = '[' + s.name + '].[' + o.name + ']'																					    	    	    	    						  "
                         + "	,@object_id = o.[object_id]																													    	    	    	    					  "
-                        + "FROM sys.objects o WITH (NOWAIT)																												    	    	    	    					  "
-                        + "JOIN sys.schemas s WITH (NOWAIT) ON o.[schema_id] = s.[schema_id]																			    	    	    	    						  "
+                        + "FROM sys.objects o WITH (UPDLOCK, HOLDLOCK)  																								    	    	    	    					  "
+                        + "JOIN sys.schemas s WITH (UPDLOCK, HOLDLOCK) ON o.[schema_id] = s.[schema_id]																			    	    	    	    						  "
                         + "WHERE s.name + '.' + o.name = @table_name																									    	    	    	    						  "
                         + "	AND o.[type] = 'U'																															    	    	    	    					  "
                         + "	AND o.is_ms_shipped = 0																														    	    	    	    					  "
@@ -195,8 +199,8 @@ namespace Adirev.Service
                         + "		,ic.is_descending_key																													    	    	    	    					  "
                         + "		,ic.is_included_column																													    	    	    	    					  "
                         + "		,c.name																																	    	    	    	    					  "
-                        + "	FROM sys.index_columns ic WITH (NOWAIT)																										    	    	    	    					  "
-                        + "	JOIN sys.columns c WITH (NOWAIT) ON ic.[object_id] = c.[object_id]																			    	    	    	    					  "
+                        + "	FROM sys.index_columns ic WITH (UPDLOCK, HOLDLOCK)																										    	    	    	    					  "
+                        + "	JOIN sys.columns c WITH (UPDLOCK, HOLDLOCK) ON ic.[object_id] = c.[object_id]																			    	    	    	    					  "
                         + "		AND ic.column_id = c.column_id																											    	    	    	    					  "
                         + "	WHERE ic.[object_id] = @object_id																											    	    	    	    					  "
                         + "	)																																			    	    	    	    					  "
@@ -205,10 +209,10 @@ namespace Adirev.Service
                         + "	SELECT k.constraint_object_id																												    	    	    	    					  "
                         + "		,cname = c.name																															    	    	    	    					  "
                         + "		,rcname = rc.name																														    	    	    	    					  "
-                        + "	FROM sys.foreign_key_columns k WITH (NOWAIT)																								    	    	    	    					  "
-                        + "	JOIN sys.columns rc WITH (NOWAIT) ON rc.[object_id] = k.referenced_object_id																    	    	    	    					  "
+                        + "	FROM sys.foreign_key_columns k WITH (UPDLOCK, HOLDLOCK)																								    	    	    	    					  "
+                        + "	JOIN sys.columns rc WITH (UPDLOCK, HOLDLOCK) ON rc.[object_id] = k.referenced_object_id																    	    	    	    					  "
                         + "		AND rc.column_id = k.referenced_column_id																								    	    	    	    					  "
-                        + "	JOIN sys.columns c WITH (NOWAIT) ON c.[object_id] = k.parent_object_id																		    	    	    	    					  "
+                        + "	JOIN sys.columns c WITH (UPDLOCK, HOLDLOCK) ON c.[object_id] = k.parent_object_id																		    	    	    	    					  "
                         + "		AND c.column_id = k.parent_column_id																									    	    	    	    					  "
                         + "	WHERE k.parent_object_id = @object_id																										    	    	    	    					  "
                         + "	)																																			    	    	    	    					  "
@@ -266,14 +270,14 @@ namespace Adirev.Service
                         + "							ELSE ''																												    	    	    	    					  "
                         + "							END																													    	    	    	    					  "
                         + "					END + CHAR(13)																												    	    	    	    					  "
-                        + "			FROM sys.columns c WITH (NOWAIT)																									    	    	    	    					  "
-                        + "			JOIN sys.types tp WITH (NOWAIT) ON c.user_type_id = tp.user_type_id																	    	    	    	    					  "
-                        + "			LEFT JOIN sys.computed_columns cc WITH (NOWAIT) ON c.[object_id] = cc.[object_id]													    	    	    	    					  "
+                        + "			FROM sys.columns c WITH (UPDLOCK, HOLDLOCK)																									    	    	    	    					  "
+                        + "			JOIN sys.types tp WITH (UPDLOCK, HOLDLOCK) ON c.user_type_id = tp.user_type_id																	    	    	    	    					  "
+                        + "			LEFT JOIN sys.computed_columns cc WITH (UPDLOCK, HOLDLOCK) ON c.[object_id] = cc.[object_id]													    	    	    	    					  "
                         + "				AND c.column_id = cc.column_id																									    	    	    	    					  "
-                        + "			LEFT JOIN sys.default_constraints dc WITH (NOWAIT) ON c.default_object_id != 0														    	    	    	    					  "
+                        + "			LEFT JOIN sys.default_constraints dc WITH (UPDLOCK, HOLDLOCK) ON c.default_object_id != 0														    	    	    	    					  "
                         + "				AND c.[object_id] = dc.parent_object_id																							    	    	    	    					  "
                         + "				AND c.column_id = dc.parent_column_id																							    	    	    	    					  "
-                        + "			LEFT JOIN sys.identity_columns ic WITH (NOWAIT) ON c.is_identity = 1																    	    	    	    					  "
+                        + "			LEFT JOIN sys.identity_columns ic WITH (UPDLOCK, HOLDLOCK) ON c.is_identity = 1																    	    	    	    					  "
                         + "				AND c.[object_id] = ic.[object_id]																								    	    	    	    					  "
                         + "				AND c.column_id = ic.column_id																									    	    	    	    					  "
                         + "			WHERE c.[object_id] = @object_id																									    	    	    	    					  "
@@ -288,8 +292,8 @@ namespace Adirev.Service
                         + "											THEN 'DESC'																							    	    	    	    					  "
                         + "										ELSE 'ASC'																								    	    	    	    					  "
                         + "										END																										    	    	    	    					  "
-                        + "								FROM sys.index_columns ic WITH (NOWAIT)																			    	    	    	    					  "
-                        + "								JOIN sys.columns c WITH (NOWAIT) ON c.[object_id] = ic.[object_id]												    	    	    	    					  "
+                        + "								FROM sys.index_columns ic WITH (UPDLOCK, HOLDLOCK)																			    	    	    	    					  "
+                        + "								JOIN sys.columns c WITH (UPDLOCK, HOLDLOCK) ON c.[object_id] = ic.[object_id]												    	    	    	    					  "
                         + "									AND c.column_id = ic.column_id																				    	    	    	    					  "
                         + "								WHERE ic.is_included_column = 0																					    	    	    	    					  "
                         + "									AND ic.[object_id] = k.parent_object_id																		    	    	    	    					  "
@@ -298,7 +302,7 @@ namespace Adirev.Service
                         + "									,TYPE																										    	    	    	    					  "
                         + "								).value('.', 'NVARCHAR(MAX)'), 1, 2, '')																		    	    	    	    					  "
                         + "					) + ')' + CHAR(13)																											    	    	    	    					  "
-                        + "			FROM sys.key_constraints k WITH (NOWAIT)																							    	    	    	    					  "
+                        + "			FROM sys.key_constraints k WITH (UPDLOCK, HOLDLOCK)																							    	    	    	    					  "
                         + "			WHERE k.parent_object_id = @object_id																								    	    	    	    					  "
                         + "				AND k.[type] = 'PK'																												    	    	    	    					  "
                         + "			), '') + ')' + CHAR(13) + ISNULL((																									    	    	    	    					  "
@@ -336,8 +340,8 @@ namespace Adirev.Service
                         + "								THEN ' ON UPDATE SET DEFAULT'																					    	    	    	    					  "
                         + "							ELSE ''																												    	    	    	    					  "
                         + "							END + CHAR(13) + 'ALTER TABLE ' + @object_name + ' CHECK CONSTRAINT [' + fk.name + ']' + CHAR(13)					    	    	    	    					  "
-                        + "					FROM sys.foreign_keys fk WITH (NOWAIT)																						    	    	    	    					  "
-                        + "					JOIN sys.objects ro WITH (NOWAIT) ON ro.[object_id] = fk.referenced_object_id												    	    	    	    					  "
+                        + "					FROM sys.foreign_keys fk WITH (UPDLOCK, HOLDLOCK)																						    	    	    	    					  "
+                        + "					JOIN sys.objects ro WITH (UPDLOCK, HOLDLOCK) ON ro.[object_id] = fk.referenced_object_id												    	    	    	    					  "
                         + "					WHERE fk.parent_object_id = @object_id																						    	    	    	    					  "
                         + "					FOR XML PATH(N'')																											    	    	    	    					  "
                         + "						,TYPE																													    	    	    	    					  "
@@ -371,7 +375,7 @@ namespace Adirev.Service
                         + "							THEN ''																												    	    	    	    					  "
                         + "						ELSE ' WHERE ' + i.filter_definition																					    	    	    	    					  "
                         + "						END + CHAR(13)																											    	    	    	    					  "
-                        + "				FROM sys.indexes i WITH (NOWAIT)																								    	    	    	    					  "
+                        + "				FROM sys.indexes i WITH (UPDLOCK, HOLDLOCK)																								    	    	    	    					  "
                         + "				WHERE i.[object_id] = @object_id																								    	    	    	    					  "
                         + "					AND i.is_primary_key = 0																									    	    	    	    					  "
                         + "					AND i.[type] = 2																											    	    	    	    					  "
@@ -383,7 +387,9 @@ namespace Adirev.Service
                         + "SELECT @table_name as [name], @SQL AS table_definition																														  ";
                         #endregion
 
+                        conn.Open();
                         SqlCommand command = new SqlCommand(query, conn);
+                        command.CommandTimeout = 300;
 
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
@@ -396,12 +402,13 @@ namespace Adirev.Service
                                 listItemsContents.Add(new DatabaseItem() { Name = name_item, Contents = content });
                             }
                         }
+                        conn.Close();
                     }
                 }
             }
             catch (Exception ex)
             {
-                new NullReferenceException("Login failed", ex);
+                throw ex;
             }
             finally
             {

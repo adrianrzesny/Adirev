@@ -8,7 +8,7 @@ namespace Adirev.Model
     {
         #region Properties
         public Logger LoggerApplication { get; set; } = Logger.Instance;
-        public string Logs { get => LoggerApplication.LogOperacion; }
+        public string Logs { get => LoggerApplication.LogHistory; }
         #endregion
     }
 }

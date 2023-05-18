@@ -12,9 +12,6 @@ using System.Windows.Shapes;
 
 namespace Adirev.View
 {
-    /// <summary>
-    /// Logika interakcji dla klasy LogWindow.xaml
-    /// </summary>
     public partial class LogWindow : Window
     {
         public LogWindow()

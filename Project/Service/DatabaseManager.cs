@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Adirev.Interface;
 using Adirev.Model;
+using Adirev.View;
+using Adirev.ViewModel;
 
 namespace Adirev.Service
 {
@@ -22,6 +24,11 @@ namespace Adirev.Service
             ALL,
             CHECKED
         }
+        #endregion
+
+        #region Objects
+        private Logger LoggerApplication { get; set; } = Logger.Instance;
+        private ApplicationSettings Settings { get; set; } = ApplicationSettings.Instance;
         #endregion
 
         #region Properties
@@ -65,7 +72,7 @@ namespace Adirev.Service
             {
                 IDatabase db = GetDatabaseObject(this.System);
 
-                if (this.DatabaseEntity != null && db != null)
+                if (this.DatabaseEntity != null && db != null && result == true)
                 {
                     DatabaseFunctions = db.GetItems(DatabaseManager.TypeScript.FN, this);
                     DatabaseProcedures = db.GetItems(DatabaseManager.TypeScript.P, this);
@@ -77,14 +84,21 @@ namespace Adirev.Service
                 { result = false; }
             }
             catch (Exception ex)
-            { }
+            {
+                result = false;
+
+                if (ServerManager.Ping(Server) && ex.Message.Contains("Login failed"))
+                { LoginToDatabase(() => { result = LoadItems(); }); }
+                else
+                { LoggerApplication.AddLog(ex.Message, true); }
+            }
 
             return result;
         }
 
         public List<DatabaseItem> GetItemsContents(DatabaseManager.TypeScript type, DatabaseManager.OpcionExport opcionExport, List<string> listToDownload = null)
         {
-            List<DatabaseItem> listDatabaseItem = null;
+            List<DatabaseItem> listDatabaseItem = new List<DatabaseItem>();
 
             try
             {
@@ -94,7 +108,12 @@ namespace Adirev.Service
                 { listDatabaseItem = db.GetItemsContents(type, this, opcionExport, listToDownload); }
             }
             catch (Exception ex)
-            { }
+            {
+                if (ex.Message.Contains("Login failed"))
+                { LoginToDatabase(() => { GetItemsContents(type, opcionExport, listToDownload); }); }
+                else
+                { LoggerApplication.AddLog(ex.Message, true); }
+            }
 
             return listDatabaseItem;
         }
@@ -113,6 +132,27 @@ namespace Adirev.Service
             }
 
             return db;
+        }
+        #endregion
+
+        #region Private Method
+        private void LoginToDatabase(Action action)
+        {
+            if (string.IsNullOrEmpty(Login) && string.IsNullOrEmpty(Password) && Settings.Closed == false && Settings.FirstRun == false)
+            {
+                LoginWindow lw = new LoginWindow(this.DatabaseEntity);
+                bool? resultWindow = lw.ShowDialog();
+                CredentialsWindowViewModel viewModel = (CredentialsWindowViewModel)lw.DataContext;
+                Login = viewModel.Login.Length == 0 ? "#" : viewModel.Login;
+                Password = viewModel.Password.Length == 0 ? "#" : viewModel.Password;
+                action?.Invoke();
+            }
+            else
+            {
+                Login = null;
+                Password = null;
+                LoggerApplication.AddLog($"Login failed {this.Server}.{this.DatabaseEntity} - Check login and password", true);
+            }
         }
         #endregion
     }

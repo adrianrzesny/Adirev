@@ -9,6 +9,7 @@ namespace Adirev.Model
     {
         #region Variables
         private string logOperacion;
+        private string logHistory;
         private static Logger instance = null;
         #endregion
 
@@ -23,6 +24,15 @@ namespace Adirev.Model
             private set
             {
                 logOperacion = value;
+                LogTextChanged?.Invoke();
+            }
+        }
+        public string LogHistory
+        {
+            get => logHistory;
+            private set
+            {
+                logHistory = value;
                 LogTextChanged?.Invoke();
             }
         }
@@ -44,9 +54,12 @@ namespace Adirev.Model
         #endregion
 
         #region Public Method
-        public void AddLog(string log)
+        public void AddLog(string log, bool addToHistory = false)
         {
-            LogOperacion = $"[{DateTime.Now}] {log}\n{LogOperacion}";
+            LogOperacion = $" [{DateTime.Now}] {log}\n";
+
+            if (addToHistory)
+            { LogHistory = $" [{DateTime.Now}] {log}\n{LogHistory}"; }
         }
 
         public void ClearLogs()

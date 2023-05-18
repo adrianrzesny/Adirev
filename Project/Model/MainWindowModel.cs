@@ -37,6 +37,8 @@ namespace Adirev.Models
         private bool isCheckedTables;
         private bool isCheckedTriggers;
         private bool isCheckedViews;
+        private List<string> entitiesDataBase;
+        private string entityDataBaseSelected;
         private System.Windows.Visibility progressBarVisibility;
         private System.Windows.Visibility itemsDataBaseVisibility;
         private System.Windows.Visibility entitiesDataBaseVisibility;
@@ -48,6 +50,7 @@ namespace Adirev.Models
 
         #region Properties
         public Logger LoggerApplication { get; set; } = Logger.Instance;
+        public ApplicationSettings Settings { get; set; } = ApplicationSettings.Instance;
         public ModeWindow ModeMainWindow { get; set; }
         public ObservableCollection<object> MenuItems { get; set; }
         public bool Connected { get; set; }
@@ -60,11 +63,27 @@ namespace Adirev.Models
         public ObservableCollection<CheckBoxItem> DatabaseTables { get; set; }
         public ObservableCollection<CheckBoxItem> DatabaseTriggers { get; set; }
         public ObservableCollection<CheckBoxItem> DatabaseViews { get; set; }
-        public string EntityDataBaseSelected { get; set; }
-        public List<string> EntitiesDataBase { get; set; }
         public List<string> Systems { get => new List<string>() { "Microsoft SQL Server" }; }
         public string ServerButtonChar { get => Connected == true ? "X" : "⮧"; }
         public string Path { get; set; }
+        public List<string> EntitiesDataBase
+        {
+            get => entitiesDataBase;
+            set
+            {
+                entitiesDataBase = value;
+                EntitiesDataBaseChanged?.Invoke();
+            }
+        }
+        public string EntityDataBaseSelected
+        {
+            get => entityDataBaseSelected;
+            set
+            {
+                entityDataBaseSelected = value;
+                EntityDataBaseSelectedChanged?.Invoke();
+            }
+        }
         public System.Windows.Visibility ProgressBarVisibility
         {
             get => progressBarVisibility;
@@ -87,7 +106,7 @@ namespace Adirev.Models
         }
         public string TextLog
         {
-            get => LoggerApplication.LogOperacion?.Substring(0, 250);
+            get => LoggerApplication.LogOperacion;
             set => LoggerApplication.AddLog(value);
         }
         public string TIFunctionsName
@@ -210,7 +229,8 @@ namespace Adirev.Models
         public event MainWindowModelEventHandler StatusCheckedViewsChanged;
         public event MainWindowModelEventHandler ClickMenuItem;
         public event MainWindowModelEventHandler ProgressBarVisibilityChanged;
-        public event MainWindowModelEventHandler TextLogChanged;
+        public event MainWindowModelEventHandler EntitiesDataBaseChanged;
+        public event MainWindowModelEventHandler EntityDataBaseSelectedChanged;
         #endregion
 
         #region Constructor
@@ -250,6 +270,8 @@ namespace Adirev.Models
             LoadMenuItem();
 
             LoadSession($@"{ApplicationSession.PathHistoryApplication}\lastsesion.{ApplicationSession.Extension}");
+
+            Settings.FirstRun = false;
         }
         #endregion
 
@@ -345,7 +367,8 @@ namespace Adirev.Models
             string path = Path;
 
             string ItemType = DatabaseManager.GetNameTypeScript(type);
-            LoggerApplication.AddLog($"Export ( {Server}.{databaseName}->{ItemType} )");
+            LoggerApplication.AddLog($"Export ( {Server}.{databaseName}->{ItemType} )", true);
+            FileManager.CreateDirectory(path, DatabaseManager.GetNameTypeScript(type));
 
             DatabaseManager db = ServerDatabase.Databases.Where(x => x.DatabaseEntity == databaseName).FirstOrDefault();
             if (listToDownload?.Count > 0 || opcionExport == DatabaseManager.OpcionExport.ALL)
@@ -358,12 +381,6 @@ namespace Adirev.Models
                     path += $@"\{FileManager.DeleteInvalidFileNameChars(db.DatabaseEntity)}";
                 }
 
-                FileManager.CreateDirectory(path, "Functions");
-                FileManager.CreateDirectory(path, "Triggers");
-                FileManager.CreateDirectory(path, "Procedures");
-                FileManager.CreateDirectory(path, "Views");
-                FileManager.CreateDirectory(path, "Tables");
-
                 foreach (var item in list)
                 { FileManager.SaveFileSQL(path, item.Name, item.Contents, type); }
             }
@@ -373,11 +390,14 @@ namespace Adirev.Models
         {
             ObservableCollection<CheckBoxItem> listCheckBoxItem = new ObservableCollection<CheckBoxItem>();
 
-            foreach (var item in list)
+            if (list != null)
             {
-                CheckBoxItem checkBoxItem = new CheckBoxItem { IsSelected = true, Name = item };
-                checkBoxItem.StatusChanged += myMethodName;
-                listCheckBoxItem.Add(checkBoxItem);
+                foreach (var item in list)
+                {
+                    CheckBoxItem checkBoxItem = new CheckBoxItem { IsSelected = true, Name = item };
+                    checkBoxItem.StatusChanged += myMethodName;
+                    listCheckBoxItem.Add(checkBoxItem);
+                }
             }
 
             return listCheckBoxItem;
@@ -392,11 +412,18 @@ namespace Adirev.Models
 
             applicationSession = FileManager.ReadFromBinaryFile<ApplicationSession>(path);
 
+            ServerDatabase.Login = applicationSession.GetLogin();
+            ServerDatabase.Password = applicationSession.GetPassword();
             SystemDataBaseSelected = applicationSession.System;
             Server = applicationSession.Server;
-            LoadDatabases();
-            EntityDataBaseSelected = applicationSession.Database;
-            LoadDatabaseItems();
+
+            if (ServerManager.Ping(Server))
+            {
+                LoadDatabases();
+                EntityDataBaseSelected = applicationSession.Database;
+                LoadDatabaseItems();
+            }
+
             Path = applicationSession.Path;
         }
 
@@ -416,7 +443,7 @@ namespace Adirev.Models
             SaveScript(DatabaseManager.TypeScript.V, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseViews.Where(x => x.IsSelected).Select(x => x.Name).ToList());
 
             SetVisibleProgressBar(false);
-            LoggerApplication.AddLog($"Export completed ( {Server}.{EntityDataBaseSelected} -> {Path} )");
+            LoggerApplication.AddLog($"Export completed ( {Server}.{EntityDataBaseSelected} -> {Path} )", true);
 
             SaveCurentSesion();
             LoadMenuItem();
@@ -436,7 +463,7 @@ namespace Adirev.Models
             }
 
             SetVisibleProgressBar(false);
-            LoggerApplication.AddLog($"Export completed ( {Server} -> {Path} )");
+            LoggerApplication.AddLog($"Export completed ( {Server} -> {Path} )", true);
         }
 
         private void SaveCurentSesion()
@@ -444,7 +471,9 @@ namespace Adirev.Models
             string path = ApplicationSession.PathHistoryApplication;
             FileManager.CreateDirectory(path, @$"{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}");
 
-            ApplicationSession applicationSession = new ApplicationSession() { System = this.SystemDataBaseSelected, Server = this.Server, Database = this.EntityDataBaseSelected, Path = this.Path };
+            ApplicationSession applicationSession = new ApplicationSession() { System = this.SystemDataBaseSelected, Server = this.Server, Database = this.EntityDataBaseSelected, Path = this.Path};
+            applicationSession.SetLogin(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Login);
+            applicationSession.SetPassword(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Password);
 
             path += @$"\{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}\{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}.{ApplicationSession.Extension}";
 
@@ -513,6 +542,8 @@ namespace Adirev.Models
             }
             else
             {
+                LoggerApplication.AddLog($"Server disconnected -> {Server}", true);
+
                 EntitiesDataBase.Clear();
                 EntityDataBaseSelected = null;
                 DatabaseIsEnabled = false;
@@ -526,6 +557,10 @@ namespace Adirev.Models
                 DatabaseTables.Clear();
                 DatabaseTriggers.Clear();
                 DatabaseViews.Clear();
+
+                ServerDatabase.Login = String.Empty;
+                ServerDatabase.Password = String.Empty;
+
             }
         }
 
@@ -540,6 +575,24 @@ namespace Adirev.Models
                 DatabaseTables = ConvertToListCheckBoxItem(db.DatabaseTables, UpdateTabNameTables);
                 DatabaseTriggers = ConvertToListCheckBoxItem(db.DatabaseTriggers, UpdateTabNameTriggers);
                 DatabaseViews = ConvertToListCheckBoxItem(db.DatabaseViews, UpdateTabNameViews);
+            }
+            else
+            {
+                if (Settings.FirstRun)
+                {
+                    EntitiesDataBase.Clear();
+                    EntityDataBaseSelected = null;
+                    DatabaseIsEnabled = false;
+                    PathIsEnabled = false;
+                    Connected = false;
+                    Path = "";
+
+                    DatabaseFunctions.Clear();
+                    DatabaseProcedures.Clear();
+                    DatabaseTables.Clear();
+                    DatabaseTriggers.Clear();
+                    DatabaseViews.Clear();
+                }
             }
 
             UpdateTabNameFunctions();
@@ -568,7 +621,11 @@ namespace Adirev.Models
 
         public void SaveLastSesion()
         {
+            Settings.Closed = true;
+
             ApplicationSession applicationSession = new ApplicationSession() { System = this.SystemDataBaseSelected, Server = this.Server, Database = this.EntityDataBaseSelected, Path = this.Path };
+            applicationSession.SetLogin(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Login);
+            applicationSession.SetPassword(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Password);
 
             FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderApplication);
             FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderHistoryApplication);

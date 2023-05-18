@@ -11,6 +11,7 @@ namespace Adirev.Service
         #region Public Methods
         public static void SaveFileSQL(string path, string file, string contents, DatabaseManager.TypeScript type)
         {
+            file = DeleteInvalidFileNameChars(file);
             try
             {
                 System.IO.File.WriteAllText($@"{path}\{DatabaseManager.GetNameTypeScript(type)}\{file}.sql", contents);
@@ -21,6 +22,7 @@ namespace Adirev.Service
 
         public static void CreateDirectory(string path, string directory)
         {
+            directory = DeleteInvalidFileNameChars(directory);
             try
             {
                 System.IO.Directory.CreateDirectory($@"{path}\{directory}");
@@ -90,6 +92,17 @@ namespace Adirev.Service
             return list;
         }
 
+        public static string DeleteInvalidFileNameChars(string text)
+        {
+            string returnText = text;
+
+            foreach(var c in System.IO.Path.GetInvalidFileNameChars())
+            {
+                returnText = returnText.Replace(c.ToString(), "-");
+            }
+
+            return returnText;
+        }
         #endregion
     }
 }

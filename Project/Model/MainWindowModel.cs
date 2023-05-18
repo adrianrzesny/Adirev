@@ -87,7 +87,7 @@ namespace Adirev.Models
         }
         public string TextLog
         {
-            get => LoggerApplication.LogOperacion?.Substring(0, (LoggerApplication.LogOperacion.Length > 250 ? 250 : LoggerApplication.LogOperacion.Length));
+            get => LoggerApplication.LogOperacion?.Substring(0, 250);
             set => LoggerApplication.AddLog(value);
         }
         public string TIFunctionsName
@@ -258,7 +258,7 @@ namespace Adirev.Models
         {
             var listDirectories = FileManager.GetDirectories(ApplicationSession.PathHistoryApplication);
             foreach (var item in listDirectories)
-            { FileManager.DeleteDirectory(@$"{ApplicationSession.PathHistoryApplication}\{item}"); }
+            { FileManager.DeleteDirectory(@$"{ApplicationSession.PathHistoryApplication}\{FileManager.DeleteInvalidFileNameChars(item)}"); }
 
             LoadMenuItem();
         }
@@ -271,7 +271,7 @@ namespace Adirev.Models
             var listDirectories = FileManager.GetDirectories(ApplicationSession.PathHistoryApplication);
             foreach (var item in listDirectories)
             {
-                string pathFileSession = @$"{ApplicationSession.PathHistoryApplication}\{item}\{item}.{ApplicationSession.Extension}";
+                string pathFileSession = @$"{ApplicationSession.PathHistoryApplication}\{FileManager.DeleteInvalidFileNameChars(item)}\{FileManager.DeleteInvalidFileNameChars(item)}.{ApplicationSession.Extension}";
                 historyItems.Add(new MenuItemViewModel(LoadSession, MenuItemClickInvoke, pathFileSession) { Header = item });
             }
 
@@ -355,7 +355,7 @@ namespace Adirev.Models
                 if (opcionExport == DatabaseManager.OpcionExport.ALL)
                 {
                     FileManager.CreateDirectory(Path, db.DatabaseEntity);
-                    path += $@"\{db.DatabaseEntity}";
+                    path += $@"\{FileManager.DeleteInvalidFileNameChars(db.DatabaseEntity)}";
                 }
 
                 FileManager.CreateDirectory(path, "Functions");
@@ -442,11 +442,11 @@ namespace Adirev.Models
         private void SaveCurentSesion()
         {
             string path = ApplicationSession.PathHistoryApplication;
-            FileManager.CreateDirectory(path, @$"\{Server}.{EntityDataBaseSelected}");
+            FileManager.CreateDirectory(path, @$"{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}");
 
             ApplicationSession applicationSession = new ApplicationSession() { System = this.SystemDataBaseSelected, Server = this.Server, Database = this.EntityDataBaseSelected, Path = this.Path };
 
-            path += @$"\{Server}.{EntityDataBaseSelected}\{Server}.{EntityDataBaseSelected}.{ApplicationSession.Extension}";
+            path += @$"\{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}\{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}.{ApplicationSession.Extension}";
 
             FileManager.WriteToBinaryFile<ApplicationSession>(path, applicationSession);
         }

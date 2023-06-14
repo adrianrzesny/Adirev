@@ -65,6 +65,7 @@ namespace Adirev.Model
         public void ClearLogs()
         {
             LogOperacion = string.Empty;
+            LogHistory = string.Empty;
         }
         #endregion
     }

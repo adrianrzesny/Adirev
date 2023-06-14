@@ -10,7 +10,7 @@
     <Window.DataContext>
         <mw:LogWindowViewModel/>
     </Window.DataContext>
-    <Grid>
+	<Grid Background="{StaticResource WindowBackgound}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -18,7 +18,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="0" Grid.Column="0" >
-            <TextBlock Text="{Binding Logs}"/>
+            <TextBlock Text="{Binding Logs}" Foreground="{StaticResource TextColor}"/>
         </ScrollViewer>
     </Grid>
 </Window>

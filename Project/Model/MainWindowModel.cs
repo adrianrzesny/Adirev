@@ -637,6 +637,12 @@ namespace Adirev.Models
         public void OpenLogWindow()
         {
             LogWindow lw = new LogWindow();
+
+            Application curApp = Application.Current;
+            Window mainWindow = curApp.MainWindow;
+            lw.Left = mainWindow.Left + ((mainWindow.Width - lw.Width) / 2);
+            lw.Top = mainWindow.Top + ((mainWindow.Height - lw.Height) / 2);
+
             lw.ShowDialog();
         }
 

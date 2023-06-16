@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using Adirev.Interface;
 using Adirev.Model;
 using Adirev.View;
@@ -140,9 +141,15 @@ namespace Adirev.Service
         {
             if (string.IsNullOrEmpty(Login) && string.IsNullOrEmpty(Password) && Settings.Closed == false && Settings.FirstRun == false)
             {
-                LoginWindow lw = new LoginWindow(this.DatabaseEntity);
-                bool? resultWindow = lw.ShowDialog();
-                CredentialsWindowViewModel viewModel = (CredentialsWindowViewModel)lw.DataContext;
+                CredentialsWindow cw = new CredentialsWindow(this.DatabaseEntity);
+
+                Application curApp = Application.Current;
+                Window mainWindow = curApp.MainWindow;
+                cw.Left = mainWindow.Left + ((mainWindow.Width - cw.Width) / 2);
+                cw.Top = mainWindow.Top + ((mainWindow.Height - cw.Height) / 2);
+
+                bool? resultWindow = cw.ShowDialog();
+                CredentialsWindowViewModel viewModel = (CredentialsWindowViewModel)cw.DataContext;
                 Login = viewModel.Login.Length == 0 ? "#" : viewModel.Login;
                 Password = viewModel.Password.Length == 0 ? "#" : viewModel.Password;
                 action?.Invoke();

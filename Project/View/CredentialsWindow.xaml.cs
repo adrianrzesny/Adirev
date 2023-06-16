@@ -13,9 +13,9 @@ using System.Windows.Shapes;
 
 namespace Adirev.View
 {
-    public partial class LoginWindow : Window
+    public partial class CredentialsWindow : Window
     {
-        public LoginWindow(string title)
+        public CredentialsWindow(string title)
         {
             InitializeComponent();
             CredentialsWindowViewModel modelView = (CredentialsWindowViewModel)this.DataContext;

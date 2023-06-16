@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Windows;
 using Adirev.Interface;
 using Adirev.Model;
 using Adirev.View;
@@ -118,9 +119,15 @@ namespace Adirev.Service
         {
             if (Login == null && Password == null && Settings.Closed == false && Settings.FirstRun == false)
             {
-                LoginWindow lw = new LoginWindow(ServerDatabase);
-                bool? resultWindow = lw.ShowDialog();
-                CredentialsWindowViewModel viewModel = (CredentialsWindowViewModel)lw.DataContext;
+                CredentialsWindow cw = new CredentialsWindow(ServerDatabase);
+
+                Application curApp = Application.Current;
+                Window mainWindow = curApp.MainWindow;
+                cw.Left = mainWindow.Left + ((mainWindow.Width - cw.Width) / 2);
+                cw.Top = mainWindow.Top + ((mainWindow.Height - cw.Height) / 2);
+
+                bool? resultWindow = cw.ShowDialog();
+                CredentialsWindowViewModel viewModel = (CredentialsWindowViewModel)cw.DataContext;
                 Login = viewModel.Login.Length == 0 ? "#" : viewModel.Login;
                 Password = viewModel.Password.Length == 0 ? "#" : viewModel.Password;
                 action?.Invoke();

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Adirev.View"
         xmlns:mw="clr-namespace:Adirev.ViewModel"
         mc:Ignorable="d"
-        Title="Event log" Height="450" Width="800">
+        Title="Event log" Height="700" Width="800">
     <Window.DataContext>
         <mw:LogWindowViewModel/>
     </Window.DataContext>

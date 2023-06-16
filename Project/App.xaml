@@ -26,6 +26,7 @@
             <Style TargetType="ListBox">
                 <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
                 <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+                <Setter Property="BorderBrush" Value="Transparent"/>
             </Style>
 
             <Style TargetType="TabControl">

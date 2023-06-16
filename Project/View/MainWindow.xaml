@@ -13,7 +13,7 @@
     </Behaviors:Interaction.Triggers>
     <Window.DataContext>
         <mw:MainWindowViewModel/>
-    </Window.DataContext>    
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5*" />
@@ -42,10 +42,10 @@
                     <HierarchicalDataTemplate DataType="{x:Type mw:MenuItemViewModel}" ItemsSource="{Binding Path=MenuItems}">
                         <TextBlock Text="{Binding Header}"/>
                     </HierarchicalDataTemplate>
-                </Menu.ItemTemplate>               
+                </Menu.ItemTemplate>
             </Menu>
         </DockPanel>
-            
+
         <Grid Grid.Row="2" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*" />
@@ -81,17 +81,17 @@
 
             <Label Content="Server" Grid.Row="1" Grid.Column="1" Margin="0,5,0,0" />
             <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}">
-            <Grid>
+                <Grid>
                     <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="35" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="35" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Server}" IsEnabled="{Binding ServerIsEnabled}"  Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4" />
-                <Button Grid.Row="0" Grid.Column="1" Content="{Binding ServerButtonChar}" Command="{Binding LoadDatabases}" IsEnabled="{Binding ServerIsEnabled}" Style="{StaticResource ButtonTextBox}"/>
-            </Grid>
+                    <Button Grid.Row="0" Grid.Column="1" Content="{Binding ServerButtonChar}" Command="{Binding LoadDatabases}" IsEnabled="{Binding ServerIsEnabled}" Style="{StaticResource ButtonTextBox}"/>
+                </Grid>
             </Border>
 
             <Label Content="Database" Grid.Row="2" Grid.Column="1" Visibility="{Binding EntitiesDataBaseVisibility}" Margin="0,5,0,0" />
@@ -112,9 +112,9 @@
                         </Behaviors:Interaction.Triggers>
                     </ComboBox>
                 </Grid>
-                </Border>
+            </Border>
 
-                <Label Content="Path save" Grid.Row="3" Grid.Column="1" Margin="0,5,0,0" />
+            <Label Content="Path save" Grid.Row="3" Grid.Column="1" Margin="0,5,0,0" />
             <Border Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -139,31 +139,33 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
-                    <ListBox ItemsSource="{Binding DatabaseFunctions, Mode=TwoWay}" Grid.ColumnSpan="2" >  
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel  Orientation="Horizontal">
-                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TextColor}" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
-                                        <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
-                                    </Trigger>
+                    <Border Background="{StaticResource ListBoxBackground}">
+                        <ListBox ItemsSource="{Binding DatabaseFunctions, Mode=TwoWay}" VerticalAlignment="Top">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel  Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
+                                            <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
+                                        </Trigger>
 
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedFunctions}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllFunction}" Foreground="{StaticResource TextColor}"/>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Border>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedFunctions}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllFunction}" Foreground="{StaticResource TextColor}" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TIProceduresName}">
@@ -172,29 +174,31 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
-                    <ListBox ItemsSource="{Binding DatabaseProcedures, Mode=TwoWay}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel  Orientation="Horizontal">
-                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TextColor}" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
-                                        <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
+                    <Border Background="{StaticResource ListBoxBackground}">
+                        <ListBox ItemsSource="{Binding DatabaseProcedures, Mode=TwoWay}" VerticalAlignment="Top">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel  Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
+                                            <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Border>
                     <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedProcedures}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllProcedures}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
@@ -204,29 +208,31 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
-                    <ListBox ItemsSource="{Binding DatabaseTables, Mode=TwoWay}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel  Orientation="Horizontal">
-                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TextColor}" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
-                                        <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
+                    <Border Background="{StaticResource ListBoxBackground}">
+                        <ListBox ItemsSource="{Binding DatabaseTables, Mode=TwoWay}" VerticalAlignment="Top">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel  Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
+                                            <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Border>
                     <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTables}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTables}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
@@ -236,7 +242,8 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
-                    <ListBox ItemsSource="{Binding DatabaseTriggers, Mode=TwoWay}">
+                    <Border Background="{StaticResource ListBoxBackground}">
+                    <ListBox ItemsSource="{Binding DatabaseTriggers, Mode=TwoWay}" VerticalAlignment="Top">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel  Orientation="Horizontal">
@@ -249,16 +256,18 @@
                             <Style TargetType="{x:Type ListBoxItem}">
                                 <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
                                 <Setter Property="Foreground" Value="{StaticResource TextColor}" />
-                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="BorderThickness" Value="0,0,0,0" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
                                 <Style.Triggers>
                                     <Trigger Property="IsEnabled" Value="False">
                                         <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
-                                        <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
-                                    </Trigger>
+                                            <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
+                                        </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </ListBox.ItemContainerStyle>
                     </ListBox>
+                    </Border>
                     <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTriggers}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTriggers}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
@@ -268,29 +277,31 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
-                    <ListBox ItemsSource="{Binding DatabaseViews, Mode=TwoWay}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel  Orientation="Horizontal">
-                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
-                                <Setter Property="Foreground" Value="{StaticResource TextColor}" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
-                                        <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
+                    <Border Background="{StaticResource ListBoxBackground}" VerticalAlignment="Top">
+                        <ListBox ItemsSource="{Binding DatabaseViews, Mode=TwoWay}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel  Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Background" Value="{StaticResource ListBoxBackground}"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource TextColorDisabled}" />
+                                            <Setter Property="Background" Value="{StaticResource ListBoxBackgroundDisabled}" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </Border>
                     <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedViews}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllViews}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>

@@ -182,6 +182,16 @@ namespace Adirev.ViewModel
                 OnPropertyChanged(nameof(DatabaseViews));
             }
         }
+        
+        public ObservableCollection<CheckBoxItem> DatabasesEntities
+        {
+            get => model.DatabasesEntities;
+            set
+            {
+                model.DatabasesEntities = value;
+                OnPropertyChanged(nameof(DatabasesEntities));
+            }
+        }
 
         public string TIFunctionsName
         {
@@ -264,6 +274,33 @@ namespace Adirev.ViewModel
                 OnPropertyChanged(nameof(TIViewsName));
             }
         }
+        public string TIDatabasesName
+        {
+            get => model.TIDatabasesName;
+            set
+            {
+                model.TIViewsName = value;
+                OnPropertyChanged(nameof(TIDatabasesName));
+            }
+        }
+        public bool TIFunctionsIsSelected
+        {
+            get => model.TIFunctionsIsSelected;
+            set
+            {
+                model.TIFunctionsIsSelected = value;
+                OnPropertyChanged(nameof(TIFunctionsIsSelected));
+            }
+        }
+        public bool TIDatabasesIsSelected
+        {
+            get => model.TIDatabasesIsSelected;
+            set
+            {
+                model.TIDatabasesIsSelected = value;
+                OnPropertyChanged(nameof(TIDatabasesIsSelected));
+            }
+        }
         public bool IsCheckedViews
         {
             get => model.IsCheckedViews;
@@ -273,10 +310,24 @@ namespace Adirev.ViewModel
                 OnPropertyChanged(nameof(IsCheckedViews));
             }
         }
+        public bool IsCheckedDatabases
+        {
+            get => model.IsCheckedDatabases;
+            set
+            {
+                model.IsCheckedDatabases = value;
+                OnPropertyChanged(nameof(IsCheckedDatabases));
+            }
+        }
         public System.Windows.Visibility ItemsDataBaseVisibility
         {
             get => model.ItemsDataBaseVisibility;
             set => model.ItemsDataBaseVisibility = value;
+        }
+        public System.Windows.Visibility TabEntitiesDataBaseVisibility
+        {
+            get => model.TabEntitiesDataBaseVisibility;
+            set => model.TabEntitiesDataBaseVisibility = value;
         }
         public System.Windows.Visibility EntitiesDataBaseVisibility
         {
@@ -303,6 +354,9 @@ namespace Adirev.ViewModel
             model.ViewsNameChanged += RefreshViewsName;
             model.StatusCheckedViewsChanged += RefreshCheckboxSelectionAllViews;
 
+            model.DatabasesNameChanged += RefreshDatabaseName;
+            model.StatusCheckedDatabasesChanged += RefreshCheckboxSelectionAllDatabases;
+
             model.ClickMenuItem += Refresh;
             model.ProgressBarVisibilityChanged += RefreshVisibleProgressBar;
 
@@ -326,11 +380,15 @@ namespace Adirev.ViewModel
             OnPropertyChanged(nameof(DatabaseTables));
             OnPropertyChanged(nameof(DatabaseTriggers));
             OnPropertyChanged(nameof(DatabaseViews));
+            OnPropertyChanged(nameof(DatabasesEntities));
             OnPropertyChanged(nameof(MenuItems));
             OnPropertyChanged(nameof(ItemsDataBaseVisibility));
+            OnPropertyChanged(nameof(TabEntitiesDataBaseVisibility));
             OnPropertyChanged(nameof(EntitiesDataBaseVisibility));
             OnPropertyChanged(nameof(DatabaseIsEnabled));
             OnPropertyChanged(nameof(PathIsEnabled));
+            OnPropertyChanged(nameof(TIDatabasesIsSelected));
+            OnPropertyChanged(nameof(TIFunctionsIsSelected));
         }
 
         private void RefreshVisibleProgressBar()
@@ -358,10 +416,20 @@ namespace Adirev.ViewModel
         {
             OnPropertyChanged(nameof(IsCheckedViews));
         }
+        
+        private void RefreshCheckboxSelectionAllDatabases()
+        {
+            OnPropertyChanged(nameof(IsCheckedDatabases));
+        }
 
         private void RefreshViewsName()
         {
             OnPropertyChanged(nameof(TIViewsName));
+        }
+
+        private void RefreshDatabaseName()
+        {
+            OnPropertyChanged(nameof(TIDatabasesName));
         }
 
         private void RefreshCheckboxSelectionAllTriggers()
@@ -413,6 +481,7 @@ namespace Adirev.ViewModel
         private ICommand changeSelectionAllTables;
         private ICommand changeSelectionAllTriggers;
         private ICommand changeSelectionAllViews;
+        private ICommand changeSelectionAllDatabases;
         private ICommand loadPath;
         private ICommand saveScripts;
         private ICommand saveLastSesion;
@@ -440,6 +509,7 @@ namespace Adirev.ViewModel
                     OnPropertyChanged(nameof(DatabaseTables));
                     OnPropertyChanged(nameof(DatabaseTriggers));
                     OnPropertyChanged(nameof(DatabaseViews));
+                    OnPropertyChanged(nameof(DatabasesEntities));
                 });
 
                 return loadDatabases;
@@ -459,6 +529,7 @@ namespace Adirev.ViewModel
                     OnPropertyChanged(nameof(DatabaseTables));
                     OnPropertyChanged(nameof(DatabaseTriggers));
                     OnPropertyChanged(nameof(DatabaseViews));
+                    OnPropertyChanged(nameof(DatabasesEntities));
                 });
 
                 return loadDatabaseItems;
@@ -537,6 +608,21 @@ namespace Adirev.ViewModel
                 });
 
                 return changeSelectionAllViews;
+            }
+        }
+        
+        public ICommand ChangeSelectionAllDatabases
+        {
+
+            get
+            {
+                if (changeSelectionAllDatabases == null) changeSelectionAllDatabases = new RelayCommand((object o) =>
+                {
+                    model.ChangeSelectionAll(DatabasesEntities, IsCheckedDatabases);
+                    OnPropertyChanged(nameof(DatabasesEntities));
+                });
+
+                return changeSelectionAllDatabases;
             }
         }
 

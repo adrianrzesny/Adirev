@@ -32,16 +32,19 @@ namespace Adirev.Models
         private string tiTablesName;
         private string tiTriggersName;
         private string tiViewsName;
+        private string tiDatabasesName;
         private bool isCheckedFunctions;
         private bool isCheckedProcedures;
         private bool isCheckedTables;
         private bool isCheckedTriggers;
         private bool isCheckedViews;
+        private bool isCheckedDatabases;
         private List<string> entitiesDataBase;
         private string entityDataBaseSelected;
         private System.Windows.Visibility progressBarVisibility;
         private System.Windows.Visibility itemsDataBaseVisibility;
         private System.Windows.Visibility entitiesDataBaseVisibility;
+        private System.Windows.Visibility tabEntitiesDataBaseVisibility;
         #endregion
 
         #region Objects
@@ -63,6 +66,7 @@ namespace Adirev.Models
         public ObservableCollection<CheckBoxItem> DatabaseTables { get; set; }
         public ObservableCollection<CheckBoxItem> DatabaseTriggers { get; set; }
         public ObservableCollection<CheckBoxItem> DatabaseViews { get; set; }
+        public ObservableCollection<CheckBoxItem> DatabasesEntities { get; set; }
         public List<string> Systems { get => new List<string>() { "Microsoft SQL Server" }; }
         public string ServerButtonChar { get => Connected == true ? "X" : "⮧"; }
         public string Path { get; set; }
@@ -103,6 +107,11 @@ namespace Adirev.Models
         {
             get => entitiesDataBaseVisibility;
             set => entitiesDataBaseVisibility = value;
+        }
+        public System.Windows.Visibility TabEntitiesDataBaseVisibility
+        {
+            get => tabEntitiesDataBaseVisibility;
+            set => tabEntitiesDataBaseVisibility = value;
         }
         public string TextLog
         {
@@ -154,6 +163,15 @@ namespace Adirev.Models
                 ViewsNameChanged?.Invoke();
             }
         }
+        public string TIDatabasesName
+        {
+            get => tiDatabasesName;
+            set
+            {
+                tiDatabasesName = value;
+                DatabasesNameChanged?.Invoke();
+            }
+        }
         public bool IsCheckedFunctions
         {
             get => isCheckedFunctions;
@@ -199,6 +217,17 @@ namespace Adirev.Models
                 StatusCheckedViewsChanged?.Invoke();
             }
         }
+        public bool TIFunctionsIsSelected { get; set; }
+        public bool TIDatabasesIsSelected { get; set; }
+        public bool IsCheckedDatabases
+        {
+            get => isCheckedDatabases;
+            set
+            {
+                isCheckedDatabases = value;
+                StatusCheckedDatabasesChanged?.Invoke();
+            }
+        }
         public string SystemDataBaseSelected
         {
             get => ServerDatabase.System;
@@ -226,7 +255,9 @@ namespace Adirev.Models
         public event MainWindowModelEventHandler TriggersNameChanged;
         public event MainWindowModelEventHandler StatusCheckedTriggersChanged;
         public event MainWindowModelEventHandler ViewsNameChanged;
+        public event MainWindowModelEventHandler DatabasesNameChanged;
         public event MainWindowModelEventHandler StatusCheckedViewsChanged;
+        public event MainWindowModelEventHandler StatusCheckedDatabasesChanged;
         public event MainWindowModelEventHandler ClickMenuItem;
         public event MainWindowModelEventHandler ProgressBarVisibilityChanged;
         public event MainWindowModelEventHandler EntitiesDataBaseChanged;
@@ -247,12 +278,15 @@ namespace Adirev.Models
             IsCheckedTriggers = true;
             TIViewsName = "Views 0/0";
             IsCheckedViews = true;
+            TIDatabasesName = "Databases 0/0";
+            IsCheckedDatabases = true;
 
             DatabaseFunctions = new ObservableCollection<CheckBoxItem>();
             DatabaseProcedures = new ObservableCollection<CheckBoxItem>();
             DatabaseTables = new ObservableCollection<CheckBoxItem>();
             DatabaseTriggers = new ObservableCollection<CheckBoxItem>();
             DatabaseViews = new ObservableCollection<CheckBoxItem>();
+            DatabasesEntities = new ObservableCollection<CheckBoxItem>();
 
             EntitiesDataBase = new List<string>();
             ServerDatabase = new ServerManager();
@@ -262,10 +296,13 @@ namespace Adirev.Models
             DatabaseIsEnabled = false;
             PathIsEnabled = false;
             Connected = false;
+            TIFunctionsIsSelected = true;
+            TIDatabasesIsSelected = false;
 
             ProgressBarVisibility = System.Windows.Visibility.Hidden;
             ItemsDataBaseVisibility = System.Windows.Visibility.Visible;
             EntitiesDataBaseVisibility = System.Windows.Visibility.Visible;
+            TabEntitiesDataBaseVisibility = System.Windows.Visibility.Collapsed;
 
             LoadMenuItem();
 
@@ -352,14 +389,20 @@ namespace Adirev.Models
 
             ItemsDataBaseVisibility = System.Windows.Visibility.Visible;
             EntitiesDataBaseVisibility = System.Windows.Visibility.Visible;
+            TabEntitiesDataBaseVisibility = System.Windows.Visibility.Collapsed;
+            TIFunctionsIsSelected = true;
+            TIDatabasesIsSelected = false;
         }
 
         private void SetModeWindowServer()
         {
             ModeMainWindow = ModeWindow.ExportServer;
 
-            ItemsDataBaseVisibility = System.Windows.Visibility.Hidden;
-            EntitiesDataBaseVisibility = System.Windows.Visibility.Hidden;
+            ItemsDataBaseVisibility = System.Windows.Visibility.Collapsed;
+            EntitiesDataBaseVisibility = System.Windows.Visibility.Collapsed;
+            TabEntitiesDataBaseVisibility = System.Windows.Visibility.Visible;
+            TIFunctionsIsSelected = false;
+            TIDatabasesIsSelected = true;
         }
 
         private void SaveScript(DatabaseManager.TypeScript type, DatabaseManager.OpcionExport opcionExport, string databaseName, List<string> listToDownload = null)
@@ -368,7 +411,6 @@ namespace Adirev.Models
 
             string ItemType = DatabaseManager.GetNameTypeScript(type);
             LoggerApplication.AddLog($"Export ( {Server}.{databaseName}->{ItemType} )", true);
-            FileManager.CreateDirectory(path, DatabaseManager.GetNameTypeScript(type));
 
             DatabaseManager db = ServerDatabase.Databases.Where(x => x.DatabaseEntity == databaseName).FirstOrDefault();
             if (listToDownload?.Count > 0 || opcionExport == DatabaseManager.OpcionExport.ALL)
@@ -377,8 +419,13 @@ namespace Adirev.Models
 
                 if (opcionExport == DatabaseManager.OpcionExport.ALL)
                 {
-                    FileManager.CreateDirectory(Path, db.DatabaseEntity);
                     path += $@"\{FileManager.DeleteInvalidFileNameChars(db.DatabaseEntity)}";
+                    FileManager.CreateDirectory(Path, FileManager.DeleteInvalidFileNameChars(db.DatabaseEntity));
+                    FileManager.CreateDirectory(path, DatabaseManager.GetNameTypeScript(type));
+                }
+                else
+                {
+                    FileManager.CreateDirectory(path, DatabaseManager.GetNameTypeScript(type));
                 }
 
                 foreach (var item in list)
@@ -405,6 +452,8 @@ namespace Adirev.Models
 
         private void LoadSession(string path)
         {
+            SetModeWindowDatabase();
+
             if (Connected)
             { LoadDatabases(); }
 
@@ -453,7 +502,7 @@ namespace Adirev.Models
         {
             SetVisibleProgressBar(true);
 
-            foreach (var item in ServerDatabase.Databases.Select(x => x.DatabaseEntity))
+            foreach (var item in DatabasesEntities.Where(x => x.IsSelected == true).Select(x => x.Name))
             {
                 SaveScript(DatabaseManager.TypeScript.FN, DatabaseManager.OpcionExport.ALL, item);
                 SaveScript(DatabaseManager.TypeScript.P, DatabaseManager.OpcionExport.ALL, item);
@@ -471,7 +520,7 @@ namespace Adirev.Models
             string path = ApplicationSession.PathHistoryApplication;
             FileManager.CreateDirectory(path, @$"{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}");
 
-            ApplicationSession applicationSession = new ApplicationSession() { System = this.SystemDataBaseSelected, Server = this.Server, Database = this.EntityDataBaseSelected, Path = this.Path};
+            ApplicationSession applicationSession = new ApplicationSession() { System = this.SystemDataBaseSelected, Server = this.Server, Database = this.EntityDataBaseSelected, Path = this.Path };
             applicationSession.SetLogin(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Login);
             applicationSession.SetPassword(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Password);
 
@@ -509,6 +558,11 @@ namespace Adirev.Models
             TIViewsName = $"Views {DatabaseViews.Where(x => x.IsSelected).Count()}/{DatabaseViews.Count}";
             IsCheckedViews = DatabaseViews.Where(x => x.IsSelected).Count() == DatabaseViews.Count;
         }
+        private void UpdateTabNameDatabases()
+        {
+            TIDatabasesName = $"Databases {DatabasesEntities.Where(x => x.IsSelected).Count()}/{DatabasesEntities.Count}";
+            IsCheckedDatabases = DatabasesEntities.Where(x => x.IsSelected).Count() == DatabasesEntities.Count;
+        }
         private void ClearLogs()
         {
             LoggerApplication.ClearLogs();
@@ -535,6 +589,7 @@ namespace Adirev.Models
                 if (ServerDatabase.LoadDatabases())
                 {
                     EntitiesDataBase = ServerDatabase.Databases.Select(x => x.DatabaseEntity).ToList();
+                    DatabasesEntities = ConvertToListCheckBoxItem(ServerDatabase.Databases.Select(x => x.DatabaseEntity).ToList(), UpdateTabNameDatabases);
                     DatabaseIsEnabled = true;
                     PathIsEnabled = true;
                     Connected = true;
@@ -557,11 +612,14 @@ namespace Adirev.Models
                 DatabaseTables.Clear();
                 DatabaseTriggers.Clear();
                 DatabaseViews.Clear();
+                DatabasesEntities.Clear();
 
                 ServerDatabase.Login = String.Empty;
                 ServerDatabase.Password = String.Empty;
 
             }
+
+            UpdateTabNameDatabases();
         }
 
         public void LoadDatabaseItems()
@@ -575,6 +633,7 @@ namespace Adirev.Models
                 DatabaseTables = ConvertToListCheckBoxItem(db.DatabaseTables, UpdateTabNameTables);
                 DatabaseTriggers = ConvertToListCheckBoxItem(db.DatabaseTriggers, UpdateTabNameTriggers);
                 DatabaseViews = ConvertToListCheckBoxItem(db.DatabaseViews, UpdateTabNameViews);
+                DatabasesEntities = ConvertToListCheckBoxItem(ServerDatabase.Databases.Select(x => x.DatabaseEntity).ToList(), UpdateTabNameDatabases);
             }
             else
             {
@@ -592,6 +651,7 @@ namespace Adirev.Models
                     DatabaseTables.Clear();
                     DatabaseTriggers.Clear();
                     DatabaseViews.Clear();
+                    DatabasesEntities.Clear();
                 }
             }
 
@@ -600,6 +660,7 @@ namespace Adirev.Models
             UpdateTabNameTables();
             UpdateTabNameTriggers();
             UpdateTabNameViews();
+            UpdateTabNameDatabases();
         }
 
         public void LoadPath()

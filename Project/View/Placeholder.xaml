@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Adirev.View.Placeholder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Adirev.View" d:DataContext="{d:DesignInstance Type=local:Placeholder}"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="400">
+    <Grid>
+        <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Background="{StaticResource TextContainerBackground}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="35" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="PlaceholderTextBox" Grid.Row="0" Grid.Column="0" Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" VerticalAlignment="Center" GotFocus="PlaceholderTextBox_GotFocus" LostFocus="PlaceholderTextBox_LostFocus" TextChanged="PlaceholderTextBox_TextChanged" Text="Wyszukaj.."/>
+                <Button Grid.Row="0" Grid.Column="1" Content="X" Style="{StaticResource ButtonTextBox}" Click="ButtonClear_Click"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

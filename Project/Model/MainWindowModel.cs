@@ -27,6 +27,12 @@ namespace Adirev.Models
         #endregion
 
         #region Variables
+        private string functionsTextSearchFields;
+        private string proceduresTextSearchFields;
+        private string tablesTextSearchFields;
+        private string triggersTextSearchFields;
+        private string viewsTextSearchFields;
+        private string databasesTextSearchFields;
         private string tiFunctionsName;
         private string tiProceduresName;
         private string tiTablesName;
@@ -242,6 +248,60 @@ namespace Adirev.Models
         {
             get => ServerDatabase.ServerDatabase;
             set => ServerDatabase.ServerDatabase = value;
+        }
+        public string FunctionsTextSearchFields
+        {
+            get => functionsTextSearchFields;
+            set
+            {
+                functionsTextSearchFields = value;
+                DatabaseFunctions = SearchItems(DatabaseFunctions, value);
+            }
+        }
+        public string ProceduresTextSearchFields
+        {
+            get => proceduresTextSearchFields;
+            set
+            {
+                proceduresTextSearchFields = value;
+                DatabaseProcedures = SearchItems(DatabaseProcedures, value);
+            }
+        }
+        public string TriggersTextSearchFields
+        {
+            get => triggersTextSearchFields;
+            set
+            {
+                triggersTextSearchFields = value;
+                DatabaseTriggers = SearchItems(DatabaseTriggers, value);
+            }
+        }
+        public string TablesTextSearchFields
+        {
+            get => tablesTextSearchFields;
+            set
+            {
+                tablesTextSearchFields = value;
+                DatabaseTables = SearchItems(DatabaseTables, value);
+            }
+        }
+        public string ViewsTextSearchFields
+        {
+            get => viewsTextSearchFields;
+            set
+            {
+                viewsTextSearchFields = value;
+                DatabaseViews = SearchItems(DatabaseViews, value);
+            }
+        }
+        public string DatabasesTextSearchFields
+        {
+            get => databasesTextSearchFields;
+            set
+            {
+                databasesTextSearchFields = value;
+                DatabasesEntities = SearchItems(DatabasesEntities, value);
+            }
         }
         #endregion
 
@@ -573,7 +633,7 @@ namespace Adirev.Models
         #region Public Methods
         public void ChangeSelectionAll(ObservableCollection<CheckBoxItem> listItems, bool isChecked)
         {
-            foreach (var item in listItems)
+            foreach (var item in listItems.Where(x => x.Visibility == Visibility.Visible))
             { item.IsSelected = isChecked; }
         }
 
@@ -705,6 +765,17 @@ namespace Adirev.Models
             lw.Top = mainWindow.Top + ((mainWindow.Height - lw.Height) / 2);
 
             lw.ShowDialog();
+        }
+
+        private ObservableCollection<CheckBoxItem> SearchItems(ObservableCollection<CheckBoxItem> items, string searchText)
+        {
+            foreach (var x in items)
+            { x.Visibility = Visibility.Visible; }
+
+            foreach (var x in items.Where(x => x.Name.ToLower().Contains(searchText.ToLower()) == false).ToList())
+            { x.Visibility = Visibility.Hidden; }
+
+            return new ObservableCollection<CheckBoxItem>(items.OrderBy(a => a.Visibility).ThenBy(x => x.Name));
         }
 
         #endregion

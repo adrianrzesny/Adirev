@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:control = "clr-namespace:Adirev.View" 
         xmlns:mw="clr-namespace:Adirev.ViewModel" xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d" IsEnabled="{Binding IsEnabledWindow}" Background="{StaticResource WindowBackgound}"
-        Title="Adirev" Height="800" Width="1200">
+        Title="Adirev 1.0.2" Height="800" Width="1200">
     <Behaviors:Interaction.Triggers>
         <Behaviors:EventTrigger EventName="Closed">
             <Behaviors:InvokeCommandAction Command="{Binding SaveLastSesion}" />
@@ -137,6 +138,7 @@
                 <Grid Style="{StaticResource TabItemGrid}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <Border Background="{StaticResource ListBoxBackground}">
@@ -144,8 +146,8 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Visibility="{Binding Visibility, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Visibility="{Binding Visibility, Mode=TwoWay}" Foreground="{StaticResource TextColor}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -165,13 +167,26 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedFunctions}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllFunction}" Foreground="{StaticResource TextColor}" Grid.ColumnSpan="2"/>
+                    <Border Grid.Row="1"  BorderBrush="{StaticResource TabBackground}" BorderThickness="1" Background="{StaticResource TextContainerBackground}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="30" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding FunctionsTextSearchFields, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedFunctions}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllFunction}" Foreground="{StaticResource TextColor}" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TIProceduresName}" Visibility="{Binding ItemsDataBaseVisibility}">
                 <Grid Style="{StaticResource TabItemGrid}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <Border Background="{StaticResource ListBoxBackground}">
@@ -179,8 +194,8 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Visibility="{Binding Visibility, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Visibility="{Binding Visibility, Mode=TwoWay}" Foreground="{StaticResource TextColor}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -199,13 +214,26 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedProcedures}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllProcedures}" Foreground="{StaticResource TextColor}" />
+                    <Border Grid.Row="1"  BorderBrush="{StaticResource TabBackground}" BorderThickness="1" Background="{StaticResource TextContainerBackground}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="30" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding ProceduresTextSearchFields, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedProcedures}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllProcedures}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TITablesName}" Visibility="{Binding ItemsDataBaseVisibility}">
                 <Grid Style="{StaticResource TabItemGrid}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <Border Background="{StaticResource ListBoxBackground}">
@@ -213,8 +241,8 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel  Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Visibility="{Binding Visibility, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Visibility="{Binding Visibility, Mode=TwoWay}" Foreground="{StaticResource TextColor}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -233,13 +261,26 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTables}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTables}" Foreground="{StaticResource TextColor}" />
+                    <Border Grid.Row="1"  BorderBrush="{StaticResource TabBackground}" BorderThickness="1" Background="{StaticResource TextContainerBackground}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="30" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding TablesTextSearchFields, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTables}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTables}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TITriggersName}" Visibility="{Binding ItemsDataBaseVisibility}">
                 <Grid Style="{StaticResource TabItemGrid}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <Border Background="{StaticResource ListBoxBackground}">
@@ -247,8 +288,8 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel  Orientation="Horizontal">
-                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Visibility="{Binding Visibility, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Visibility="{Binding Visibility, Mode=TwoWay}" Foreground="{StaticResource TextColor}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -268,13 +309,26 @@
                         </ListBox.ItemContainerStyle>
                     </ListBox>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTriggers}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTriggers}" Foreground="{StaticResource TextColor}" />
+                    <Border Grid.Row="1"  BorderBrush="{StaticResource TabBackground}" BorderThickness="1" Background="{StaticResource TextContainerBackground}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="30" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding TriggersTextSearchFields, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTriggers}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTriggers}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TIViewsName}" Visibility="{Binding ItemsDataBaseVisibility}">
                 <Grid Style="{StaticResource TabItemGrid}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <Border Background="{StaticResource ListBoxBackground}">
@@ -282,8 +336,8 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel  Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Visibility="{Binding Visibility, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Visibility="{Binding Visibility, Mode=TwoWay}" Foreground="{StaticResource TextColor}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -302,13 +356,26 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedViews}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllViews}" Foreground="{StaticResource TextColor}" />
+                    <Border Grid.Row="1"  BorderBrush="{StaticResource TabBackground}" BorderThickness="1" Background="{StaticResource TextContainerBackground}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="30" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding ViewsTextSearchFields, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedViews}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllViews}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
             <TabItem IsSelected="{Binding TIDatabasesIsSelected}" Header="{Binding TIDatabasesName}" Visibility="{Binding TabEntitiesDataBaseVisibility}">
                 <Grid Style="{StaticResource TabItemGrid}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
                         <RowDefinition Height="25" />
                     </Grid.RowDefinitions>
                     <Border Background="{StaticResource ListBoxBackground}">
@@ -316,8 +383,8 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel  Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource TextColor}" />
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Visibility="{Binding Visibility, Mode=TwoWay}" />
+                                        <TextBlock Text="{Binding Name}" Visibility="{Binding Visibility, Mode=TwoWay}" Foreground="{StaticResource TextColor}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -336,7 +403,19 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedDatabases}" Grid.Row="1" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllDatabases}" Foreground="{StaticResource TextColor}" />
+                    <Border Grid.Row="1"  BorderBrush="{StaticResource TabBackground}" BorderThickness="1" Background="{StaticResource TextContainerBackground}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="30" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding DatabasesTextSearchFields, Mode=TwoWay}" />
+                        </Grid>
+                    </Border>
+                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedDatabases}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllDatabases}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
         </TabControl>

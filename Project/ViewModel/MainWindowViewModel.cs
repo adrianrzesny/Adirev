@@ -7,6 +7,7 @@ namespace Adirev.ViewModel
 {
     using System.Collections.ObjectModel;
     using System.Threading.Tasks;
+    using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
     using Adirev.Class;
@@ -333,6 +334,66 @@ namespace Adirev.ViewModel
         {
             get => model.EntitiesDataBaseVisibility;
             set => model.EntitiesDataBaseVisibility = value;
+        }
+        public string FunctionsTextSearchFields
+        {
+            get => model.FunctionsTextSearchFields;
+            set 
+            {
+                model.FunctionsTextSearchFields = value;
+                OnPropertyChanged(nameof(FunctionsTextSearchFields));
+                OnPropertyChanged(nameof(DatabaseFunctions));
+            }
+        }
+        public string ProceduresTextSearchFields
+        {
+            get => model.ProceduresTextSearchFields;
+            set 
+            {
+                model.ProceduresTextSearchFields = value;
+                OnPropertyChanged(nameof(ProceduresTextSearchFields));
+                OnPropertyChanged(nameof(DatabaseProcedures));
+            }
+        }
+        public string TablesTextSearchFields
+        {
+            get => model.TablesTextSearchFields;
+            set 
+            {
+                model.TablesTextSearchFields = value;
+                OnPropertyChanged(nameof(TablesTextSearchFields));
+                OnPropertyChanged(nameof(DatabaseTables));
+            }
+        }
+        public string TriggersTextSearchFields
+        {
+            get => model.TriggersTextSearchFields;
+            set 
+            {
+                model.TriggersTextSearchFields = value;
+                OnPropertyChanged(nameof(TriggersTextSearchFields));
+                OnPropertyChanged(nameof(DatabaseTriggers));
+            }
+        }
+        public string ViewsTextSearchFields
+        {
+            get => model.ViewsTextSearchFields;
+            set 
+            {
+                model.ViewsTextSearchFields = value;
+                OnPropertyChanged(nameof(ViewsTextSearchFields));
+                OnPropertyChanged(nameof(DatabaseViews));
+            }
+        }
+        public string DatabasesTextSearchFields
+        {
+            get => model.DatabasesTextSearchFields;
+            set 
+            {
+                model.DatabasesTextSearchFields = value;
+                OnPropertyChanged(nameof(DatabasesTextSearchFields));
+                OnPropertyChanged(nameof(DatabasesEntities));
+            }
         }
         #endregion
 

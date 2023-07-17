@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Windows;
 using Adirev.Model;
 
 namespace Adirev.Class
@@ -35,6 +36,17 @@ namespace Adirev.Class
             {
                 model.IsSelected = value;
                 OnPropertyChanged(nameof(IsSelected));
+                StatusChanged?.Invoke();
+            }
+        }
+
+        public Visibility Visibility
+        {
+            get => model.Visibility;
+            set
+            {
+                model.Visibility = value;
+                OnPropertyChanged(nameof(Visibility));
                 StatusChanged?.Invoke();
             }
         }

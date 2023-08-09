@@ -435,6 +435,12 @@ namespace Adirev.Models
                             new MenuItemViewModel(OpenLogWindow, MenuItemClickInvoke) { Header = "Show logs" },
                             new MenuItemViewModel(ClearLogs, MenuItemClickInvoke) { Header = "Clear logs" }
                         }
+                    },
+                    new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "Help" ,
+                        MenuItems = new ObservableCollection<object>
+                        {
+                            new MenuItemViewModel(OpenWindowAboutProgramInfo, MenuItemClickInvoke) { Header = "About Adirev" }
+                        }
                     }
                 };
             }
@@ -626,6 +632,17 @@ namespace Adirev.Models
         private void ClearLogs()
         {
             LoggerApplication.ClearLogs();
+        }
+        private void OpenWindowAboutProgramInfo()
+        {
+            AboutProgramInfoWindow apiw = new AboutProgramInfoWindow();
+
+            Application curApp = Application.Current;
+            Window mainWindow = curApp.MainWindow;
+            apiw.Left = mainWindow.Left + ((mainWindow.Width - apiw.Width) / 2);
+            apiw.Top = mainWindow.Top + ((mainWindow.Height - apiw.Height) / 2);
+
+            apiw.ShowDialog();            
         }
 
         #endregion

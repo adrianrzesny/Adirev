@@ -1,0 +1,45 @@
+﻿<Window x:Class="Adirev.View.AboutProgramInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Adirev.View"
+        xmlns:mw="clr-namespace:Adirev.ViewModel" 
+        xmlns:vc="clr-namespace:Adirev.Converter"  
+        mc:Ignorable="d"
+        Title="About Adirev" Height="700" Width="800">
+    <Window.Resources>
+        <vc:AboutProgramInfoColorIconConverter x:Key="aboutProgramInfoColorIconConverter"/>
+        <vc:AboutProgramInfoTextIconConverter x:Key="aboutProgramInfoTextIconConverter"/>
+        <vc:AboutProgramInfoTextConverter x:Key="aboutProgramInfoTextConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <mw:AboutProgramInfoWindowViewModel/>
+    </Window.DataContext>
+    <Grid Background="{StaticResource WindowBackgound}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ListBox ItemsSource="{Binding AboutProgramPositions, Mode=TwoWay}" VerticalAlignment="Top">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="IsEnabled" Value="False" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding Version}" Foreground="White" FontWeight="Bold" FontSize="20"/>
+                        <Border BorderThickness="1,1,1,0" Background="{Binding Text, Converter={StaticResource aboutProgramInfoColorIconConverter}}" CornerRadius="5,5,5,5" Margin="1,1,1,1" Height="25">
+                            <Label Width="80" Foreground="Black" Background="{Binding Text, Converter={StaticResource aboutProgramInfoColorIconConverter}}" Content="{Binding Text, Converter={StaticResource aboutProgramInfoTextIconConverter}}" HorizontalContentAlignment="Center" Margin="2,2,2,2" FontWeight="Bold" FontSize="9"/>
+                        </Border>
+                        <TextBlock Text="{Binding Text, Converter={StaticResource aboutProgramInfoTextConverter}}" Visibility="{Binding Visibility, Mode=TwoWay}" Foreground="{StaticResource TextColor}" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="13"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>

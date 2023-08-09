@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\AboutProgramInfoWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\CredentialsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -18,6 +21,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\AboutProgramInfoWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\CredentialsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

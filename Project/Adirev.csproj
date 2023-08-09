@@ -9,7 +9,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Changes\CHANGELOG.md" />
 	  <None Remove="Resources\password.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Changes\CHANGELOG.md">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>

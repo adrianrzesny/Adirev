@@ -6,7 +6,7 @@
         xmlns:control = "clr-namespace:Adirev.View" 
         xmlns:mw="clr-namespace:Adirev.ViewModel" xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d" IsEnabled="{Binding IsEnabledWindow}" Background="{StaticResource WindowBackgound}"
-        Title="Adirev 1.0.2" Height="800" Width="1200">
+        Title="Adirev 1.0.3" Height="800" Width="1200">
     <Behaviors:Interaction.Triggers>
         <Behaviors:EventTrigger EventName="Closed">
             <Behaviors:InvokeCommandAction Command="{Binding SaveLastSesion}" />

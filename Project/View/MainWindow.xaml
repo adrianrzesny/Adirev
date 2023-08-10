@@ -6,7 +6,7 @@
         xmlns:control = "clr-namespace:Adirev.View" 
         xmlns:mw="clr-namespace:Adirev.ViewModel" xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d" IsEnabled="{Binding IsEnabledWindow}" Background="{StaticResource WindowBackgound}"
-        Title="Adirev 1.0.3" Height="800" Width="1200">
+        Title="Adirev 1.0.4" Height="800" Width="1200">
     <Behaviors:Interaction.Triggers>
         <Behaviors:EventTrigger EventName="Closed">
             <Behaviors:InvokeCommandAction Command="{Binding SaveLastSesion}" />
@@ -125,7 +125,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Path}" IsEnabled="{Binding PathIsEnabled}"  Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4" />
+                    <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Path}" IsEnabled="False"  Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4" />
                     <Button Grid.Row="3" Grid.Column="4" Content="..." Command="{Binding LoadPath}" IsEnabled="{Binding PathIsEnabled}" BorderThickness="0,0,1,0" Style="{StaticResource ButtonTextBox}"/>
                 </Grid>
             </Border>
@@ -176,10 +176,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding FunctionsTextSearchFields, Mode=TwoWay}" />
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Search.."  Value="{Binding FunctionsTextSearchFields, Mode=TwoWay}" />
                         </Grid>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedFunctions}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllFunction}" Foreground="{StaticResource TextColor}" Grid.ColumnSpan="2"/>
+                    <CheckBox Content="Select All" IsChecked="{Binding IsCheckedFunctions}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllFunction}" Foreground="{StaticResource TextColor}" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TIProceduresName}" Visibility="{Binding ItemsDataBaseVisibility}">
@@ -223,10 +223,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding ProceduresTextSearchFields, Mode=TwoWay}" />
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Search.."  Value="{Binding ProceduresTextSearchFields, Mode=TwoWay}" />
                         </Grid>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedProcedures}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllProcedures}" Foreground="{StaticResource TextColor}" />
+                    <CheckBox Content="Select All" IsChecked="{Binding IsCheckedProcedures}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllProcedures}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TITablesName}" Visibility="{Binding ItemsDataBaseVisibility}">
@@ -270,10 +270,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding TablesTextSearchFields, Mode=TwoWay}" />
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Search.."  Value="{Binding TablesTextSearchFields, Mode=TwoWay}" />
                         </Grid>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTables}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTables}" Foreground="{StaticResource TextColor}" />
+                    <CheckBox Content="Select All" IsChecked="{Binding IsCheckedTables}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTables}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TITriggersName}" Visibility="{Binding ItemsDataBaseVisibility}">
@@ -318,10 +318,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding TriggersTextSearchFields, Mode=TwoWay}" />
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Search.."  Value="{Binding TriggersTextSearchFields, Mode=TwoWay}" />
                         </Grid>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedTriggers}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTriggers}" Foreground="{StaticResource TextColor}" />
+                    <CheckBox Content="Select All" IsChecked="{Binding IsCheckedTriggers}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllTriggers}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding TIViewsName}" Visibility="{Binding ItemsDataBaseVisibility}">
@@ -365,10 +365,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding ViewsTextSearchFields, Mode=TwoWay}" />
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Search.."  Value="{Binding ViewsTextSearchFields, Mode=TwoWay}" />
                         </Grid>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedViews}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllViews}" Foreground="{StaticResource TextColor}" />
+                    <CheckBox Content="Select All" IsChecked="{Binding IsCheckedViews}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllViews}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
             <TabItem IsSelected="{Binding TIDatabasesIsSelected}" Header="{Binding TIDatabasesName}" Visibility="{Binding TabEntitiesDataBaseVisibility}">
@@ -412,10 +412,10 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Wyszukaj.."  Value="{Binding DatabasesTextSearchFields, Mode=TwoWay}" />
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Search.."  Value="{Binding DatabasesTextSearchFields, Mode=TwoWay}" />
                         </Grid>
                     </Border>
-                    <CheckBox Content="Zaznacz wszystko" IsChecked="{Binding IsCheckedDatabases}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllDatabases}" Foreground="{StaticResource TextColor}" />
+                    <CheckBox Content="Select All" IsChecked="{Binding IsCheckedDatabases}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllDatabases}" Foreground="{StaticResource TextColor}" />
                 </Grid>
             </TabItem>
         </TabControl>

@@ -13,6 +13,9 @@
     <Compile Update="View\CredentialsWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\LicenseWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\LogWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -25,6 +28,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\CredentialsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\LicenseWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\LogWindow.xaml">

@@ -439,7 +439,8 @@ namespace Adirev.Models
                     new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "Help" ,
                         MenuItems = new ObservableCollection<object>
                         {
-                            new MenuItemViewModel(OpenWindowAboutProgramInfo, MenuItemClickInvoke) { Header = "About Adirev" }
+                            new MenuItemViewModel(OpenWindowAboutProgramInfo, MenuItemClickInvoke) { Header = "About Adirev" },
+                            new MenuItemViewModel(OpenWindowLicense, MenuItemClickInvoke) { Header = "License" }
                         }
                     }
                 };
@@ -598,36 +599,36 @@ namespace Adirev.Models
         private void UpdateTabNameFunctions()
         {
             TIFunctionsName = $"Functions {DatabaseFunctions.Where(x => x.IsSelected).Count()}/{DatabaseFunctions.Count}";
-            IsCheckedFunctions = DatabaseFunctions.Where(x => x.IsSelected).Count() == DatabaseFunctions.Count;
+            IsCheckedFunctions = DatabaseFunctions.Where(x => x.IsSelected && x.Visibility == Visibility.Visible).Count() == DatabaseFunctions.Where(x => x.Visibility == Visibility.Visible).Count();
         }
 
         private void UpdateTabNameProcedures()
         {
             TIProceduresName = $"Procedures {DatabaseProcedures.Where(x => x.IsSelected).Count()}/{DatabaseProcedures.Count}";
-            IsCheckedProcedures = DatabaseProcedures.Where(x => x.IsSelected).Count() == DatabaseProcedures.Count;
+            IsCheckedProcedures = DatabaseProcedures.Where(x => x.IsSelected && x.Visibility == Visibility.Visible).Count() == DatabaseProcedures.Where(x => x.Visibility == Visibility.Visible).Count();
         }
 
         private void UpdateTabNameTables()
         {
             TITablesName = $"Tables {DatabaseTables.Where(x => x.IsSelected).Count()}/{DatabaseTables.Count}";
-            IsCheckedTables = DatabaseTables.Where(x => x.IsSelected).Count() == DatabaseTables.Count;
+            IsCheckedTables = DatabaseTables.Where(x => x.IsSelected && x.Visibility == Visibility.Visible).Count() == DatabaseTables.Where(x => x.Visibility == Visibility.Visible).Count();
         }
 
         private void UpdateTabNameTriggers()
         {
             TITriggersName = $"Triggers {DatabaseTriggers.Where(x => x.IsSelected).Count()}/{DatabaseTriggers.Count}";
-            IsCheckedTriggers = DatabaseTriggers.Where(x => x.IsSelected).Count() == DatabaseTriggers.Count;
+            IsCheckedTriggers = DatabaseTriggers.Where(x => x.IsSelected && x.Visibility == Visibility.Visible).Count() == DatabaseTriggers.Where(x => x.Visibility == Visibility.Visible).Count();
         }
 
         private void UpdateTabNameViews()
         {
             TIViewsName = $"Views {DatabaseViews.Where(x => x.IsSelected).Count()}/{DatabaseViews.Count}";
-            IsCheckedViews = DatabaseViews.Where(x => x.IsSelected).Count() == DatabaseViews.Count;
+            IsCheckedViews = DatabaseViews.Where(x => x.IsSelected && x.Visibility == Visibility.Visible).Count() == DatabaseViews.Where(x => x.Visibility == Visibility.Visible).Count();
         }
         private void UpdateTabNameDatabases()
         {
             TIDatabasesName = $"Databases {DatabasesEntities.Where(x => x.IsSelected).Count()}/{DatabasesEntities.Count}";
-            IsCheckedDatabases = DatabasesEntities.Where(x => x.IsSelected).Count() == DatabasesEntities.Count;
+            IsCheckedDatabases = DatabasesEntities.Where(x => x.IsSelected && x.Visibility == Visibility.Visible).Count() == DatabasesEntities.Where(x => x.Visibility == Visibility.Visible).Count();
         }
         private void ClearLogs()
         {
@@ -643,6 +644,18 @@ namespace Adirev.Models
             apiw.Top = mainWindow.Top + ((mainWindow.Height - apiw.Height) / 2);
 
             apiw.ShowDialog();            
+        }
+
+        private void OpenWindowLicense()
+        {
+            LicenseWindow lw = new LicenseWindow();
+
+            Application curApp = Application.Current;
+            Window mainWindow = curApp.MainWindow;
+            lw.Left = mainWindow.Left + ((mainWindow.Width - lw.Width) / 2);
+            lw.Top = mainWindow.Top + ((mainWindow.Height - lw.Height) / 2);
+
+            lw.ShowDialog();
         }
 
         #endregion

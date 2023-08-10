@@ -1,12 +1,18 @@
+# 1.0.4
+[NEW] A window displaying the program's license has been added 
+[FIXED] The ability to manually change the save path was blocked 
+[FIXED] Fixed "Select All" option in search mode
+[IMPROVED] The nomenclature in the program has been unified 
+
 # 1.0.3
-[NEW] A window with information about updates in the program has been added
+[NEW] A window with information about updates in the program has been added 
 
 # 1.0.2
-[NEW] Added search in groups of records
+[NEW] Added search in groups of records 
 
 # 1.0.1
-[IMPROVED] Added the ability to select databases in server export mode
+[IMPROVED] Added the ability to select databases in server export mode 
 
 # 1.0.0
-[NEW] Adirev - Database versioning tool
+[NEW] Adirev - Database versioning tool 
 

@@ -23,4 +23,4 @@ The application has daily events of the current session, which displays basic in
 <br>
 <br>
 <br>
-<img src="Screenshots\Adirev_1.0.2.png" alt="Adirev 1.0.2">&nbsp;
+<img src="Screenshots\Adirev_1.0.4.png" alt="Adirev 1.0.2">&nbsp;

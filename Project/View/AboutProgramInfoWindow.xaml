@@ -23,7 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListBox ItemsSource="{Binding AboutProgramPositions, Mode=TwoWay}" VerticalAlignment="Top">
+        <ListBox ItemsSource="{Binding AboutProgramPositions, Mode=TwoWay}" VerticalAlignment="Top" Background="{StaticResource WindowBackgound}">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="IsEnabled" Value="False" />

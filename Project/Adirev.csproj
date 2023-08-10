@@ -6,15 +6,24 @@
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<AssemblyName>Adirev</AssemblyName>
+		<ApplicationIcon>Images\Icon_app_1.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<ItemGroup>
 	  <None Remove="Changes\CHANGELOG.md" />
+	  <None Remove="Images\Icon_app_1.ico" />
+	  <None Remove="Images\Icon_app_2.ico" />
 	  <None Remove="Resources\password.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="Changes\CHANGELOG.md">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\Icon_app_1.ico">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\Icon_app_2.ico">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>
@@ -41,6 +50,16 @@
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Attachments\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="..\LICENSE.md" Link="Attachments\LICENSE.md">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 </Project>

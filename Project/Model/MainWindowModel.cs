@@ -12,6 +12,8 @@ using Adirev.Service;
 using Adirev.ViewModel;
 using System.Threading.Tasks;
 using Adirev.View;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Adirev.Models
 {
@@ -27,6 +29,7 @@ namespace Adirev.Models
         #endregion
 
         #region Variables
+        private int numberProcesses = 0;
         private string functionsTextSearchFields;
         private string proceduresTextSearchFields;
         private string tablesTextSearchFields;
@@ -58,8 +61,9 @@ namespace Adirev.Models
         #endregion
 
         #region Properties
+        public System.Windows.Forms.NotifyIcon NotifyIcon { get; set; }
         public Logger LoggerApplication { get; set; } = Logger.Instance;
-        public ApplicationSettings Settings { get; set; } = ApplicationSettings.Instance;
+        public ApplicationStatus ApplicationStatus { get; set; } = ApplicationStatus.Instance;
         public ModeWindow ModeMainWindow { get; set; }
         public ObservableCollection<object> MenuItems { get; set; }
         public bool Connected { get; set; }
@@ -327,6 +331,8 @@ namespace Adirev.Models
         #region Constructor
         public MainWindowModel()
         {
+            CheckProgramIsRunning();
+
             ModeMainWindow = ModeWindow.ExportDatabase;
             TIFunctionsName = "Functions 0/0";
             IsCheckedFunctions = true;
@@ -364,15 +370,62 @@ namespace Adirev.Models
             EntitiesDataBaseVisibility = System.Windows.Visibility.Visible;
             TabEntitiesDataBaseVisibility = System.Windows.Visibility.Collapsed;
 
+            GenerateNotifyIcon();
+
             LoadMenuItem();
 
             LoadSession($@"{ApplicationSession.PathHistoryApplication}\lastsesion.{ApplicationSession.Extension}");
+            LoadSettings(@$"{ApplicationSession.PathSettingsApplication}\settings.{ApplicationSession.Extension}");
 
-            Settings.FirstRun = false;
+            ApplicationStatus.FirstRun = false;
+
+            SetWindowVisiblity();
         }
         #endregion
 
-        #region Prvate Methods
+        #region Private Methods
+        private void CheckProgramIsRunning()
+        {
+            Process[] processes = Process.GetProcesses().Where(x => x.ProcessName.ToUpper() == "ADIREV").ToArray();
+
+            numberProcesses = processes.Length;
+
+            if (numberProcesses > 1)
+            {
+                System.Windows.MessageBox.Show("The program is already running", "Info");
+                Application curApp = Application.Current;
+                Window mainWindow = curApp.MainWindow;
+                mainWindow.Close();
+            }
+
+        }
+        private void GenerateNotifyIcon()
+        {
+            try
+            {
+                NotifyIcon = new System.Windows.Forms.NotifyIcon();
+                NotifyIcon.Icon = new System.Drawing.Icon(@"Images/Icon_app_1.ico");
+                NotifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+                NotifyIcon.ContextMenuStrip.Items.Add("Close", null, CloseApp);
+                NotifyIcon.MouseDoubleClick += notifyIconMouseDoubleClick;
+            }
+            catch (Exception ex)
+            { }
+        }
+        private void notifyIconMouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            Application curApp = Application.Current;
+            Window mainWindow = curApp.MainWindow;
+            mainWindow.Show();
+            mainWindow.WindowState = WindowState.Normal;
+        }
+        private void CloseApp(object sender, EventArgs e)
+        {
+            ApplicationStatus.Closed = true;
+            Application curApp = Application.Current;
+            Window mainWindow = curApp.MainWindow;
+            mainWindow.Close();
+        }
         private void DeleteHistory()
         {
             var listDirectories = FileManager.GetDirectories(ApplicationSession.PathHistoryApplication);
@@ -517,6 +570,11 @@ namespace Adirev.Models
             return listCheckBoxItem;
         }
 
+        private void LoadSettings(string path)
+        {
+            ApplicationStatus.Settings = FileManager.ReadFromBinaryFile<ApplicationGlobalSettings>(path);
+        }
+
         private void LoadSession(string path)
         {
             SetModeWindowDatabase();
@@ -634,6 +692,17 @@ namespace Adirev.Models
         {
             LoggerApplication.ClearLogs();
         }
+        private void OpenWindowStartingSettings()
+        {
+            StartingSettingsWindow ssw = new StartingSettingsWindow();
+
+            Application curApp = Application.Current;
+            Window mainWindow = curApp.MainWindow;
+            ssw.Left = mainWindow.Left + ((mainWindow.Width - ssw.Width) / 2);
+            ssw.Top = mainWindow.Top + ((mainWindow.Height - ssw.Height) / 2);
+
+            ssw.ShowDialog();
+        }
         private void OpenWindowAboutProgramInfo()
         {
             AboutProgramInfoWindow apiw = new AboutProgramInfoWindow();
@@ -643,7 +712,7 @@ namespace Adirev.Models
             apiw.Left = mainWindow.Left + ((mainWindow.Width - apiw.Width) / 2);
             apiw.Top = mainWindow.Top + ((mainWindow.Height - apiw.Height) / 2);
 
-            apiw.ShowDialog();            
+            apiw.ShowDialog();
         }
 
         private void OpenWindowLicense()
@@ -658,9 +727,43 @@ namespace Adirev.Models
             lw.ShowDialog();
         }
 
+        private void WindowHide()
+        {
+            NotifyIcon.BalloonTipTitle = "Minimize to Tray App";
+            NotifyIcon.BalloonTipText = "You have successfully minimized Adirev";
+            NotifyIcon.Visible = true;
+            NotifyIcon.ShowBalloonTip(250);
+
+            Application curApp = Application.Current;
+            Window mainWindow = curApp.MainWindow;
+            mainWindow.Hide();
+        }
+        private void WindowShow()
+        {
+            Application curApp = Application.Current;
+            Window mainWindow = curApp.MainWindow;
+
+            mainWindow.Show();
+            mainWindow.WindowState = WindowState.Normal;
+        }
+        private void SetWindowVisiblity()
+        {
+            if (ApplicationStatus.Settings.HideWork)
+            { WindowHide(); }
+            else
+            { WindowShow(); }
+        }
         #endregion
 
         #region Public Methods
+        public void WindowClosing(CancelEventArgs e)
+        {
+            if (!ApplicationStatus.Closed && ApplicationStatus.Settings.HideWork)
+            {
+                WindowHide();
+                e.Cancel = true;
+            }
+        }
         public void ChangeSelectionAll(ObservableCollection<CheckBoxItem> listItems, bool isChecked)
         {
             foreach (var item in listItems.Where(x => x.Visibility == Visibility.Visible))
@@ -727,7 +830,7 @@ namespace Adirev.Models
             }
             else
             {
-                if (Settings.FirstRun)
+                if (ApplicationStatus.FirstRun)
                 {
                     EntitiesDataBase.Clear();
                     EntityDataBaseSelected = null;
@@ -772,17 +875,20 @@ namespace Adirev.Models
 
         public void SaveLastSesion()
         {
-            Settings.Closed = true;
+            ApplicationStatus.Closed = true;
 
             ApplicationSession applicationSession = new ApplicationSession() { System = this.SystemDataBaseSelected, Server = this.Server, Database = this.EntityDataBaseSelected, Path = this.Path };
             applicationSession.SetLogin(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Login);
             applicationSession.SetPassword(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Password);
 
             FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderApplication);
-            FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderHistoryApplication);
-            string path = @$"{ApplicationSession.PathHistoryApplication}\lastsesion.{ApplicationSession.Extension}";
+            FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderHistory);
+            FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderSettings);
+            string pathSession = @$"{ApplicationSession.PathHistoryApplication}\lastsesion.{ApplicationSession.Extension}";
+            string pathSettings = @$"{ApplicationSession.PathSettingsApplication}\settings.{ApplicationSession.Extension}";
 
-            FileManager.WriteToBinaryFile<ApplicationSession>(path, applicationSession);
+            FileManager.WriteToBinaryFile<ApplicationSession>(pathSession, applicationSession);
+            FileManager.WriteToBinaryFile<ApplicationGlobalSettings>(pathSettings, ApplicationStatus.Settings);
         }
 
         public void OpenLogWindow()

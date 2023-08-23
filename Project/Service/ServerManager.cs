@@ -14,7 +14,7 @@ namespace Adirev.Service
     {
         #region Objects
         private Logger LoggerApplication { get; set; } = Logger.Instance;
-        private ApplicationSettings Settings { get; set; } = ApplicationSettings.Instance;
+        private ApplicationStatus ApplicationStatus { get; set; } = ApplicationStatus.Instance;
         #endregion
 
         #region Properties
@@ -117,7 +117,7 @@ namespace Adirev.Service
         #region Private Method
         private void LoginToDatabase(Action action)
         {
-            if (Login == null && Password == null && Settings.Closed == false && Settings.FirstRun == false)
+            if (Login == null && Password == null && ApplicationStatus.Closed == false && ApplicationStatus.FirstRun == false)
             {
                 CredentialsWindow cw = new CredentialsWindow(ServerDatabase);
 

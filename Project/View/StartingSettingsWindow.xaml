@@ -1,0 +1,28 @@
+﻿<Window x:Class="Adirev.View.StartingSettingsWindow"
+        x:Name="StartingSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mw="clr-namespace:Adirev.ViewModel"
+        xmlns:local="clr-namespace:Adirev.View"
+        mc:Ignorable="d" Background="{StaticResource WindowBackgound}"
+        Title="Starting settings" Height="150" Width="400">
+    <Window.DataContext>
+        <mw:StartingSettingsWindowViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <CheckBox Content="Boot with the system" Grid.Row="0" Grid.Column="0" Margin="15,10,0,0" Foreground="GhostWhite" IsChecked="{Binding Autorun}"/>
+        <CheckBox Content="Allow hidden work" Grid.Row="1" Grid.Column="0" Margin="15,10,0,0" Foreground="GhostWhite" IsChecked="{Binding HideWork}"/>
+        <Button Content="Save" Grid.Column="0" Grid.Row="2" Width='115' Height="25" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,0,10,10" Command="{Binding Save}" CommandParameter="{Binding ElementName=StartingSettings}"/>
+    </Grid>
+</Window>

@@ -21,6 +21,11 @@ namespace Adirev.ViewModel
         #endregion
 
         #region Properties
+        public System.Windows.Forms.NotifyIcon NotifyIcon
+        {
+            get => model.NotifyIcon;
+            set => model.NotifyIcon = value;
+        }
         public string ServerButtonChar { get => model.ServerButtonChar; }
         public string TextLog { get => model.TextLog; }
         public Logger LoggerApplication { get => model.LoggerApplication; }
@@ -547,9 +552,22 @@ namespace Adirev.ViewModel
         private ICommand saveScripts;
         private ICommand saveLastSesion;
         private ICommand openLogWindow;
+        private ICommand windowClosing;
         #endregion
 
         #region Public Command
+        public ICommand WindowClosing
+        {
+            get
+            {
+                if (windowClosing == null) windowClosing = new RelayCommand((object o) =>
+                {
+                    model.WindowClosing((CancelEventArgs)o);
+                });
+
+                return windowClosing;
+            }
+        }
         public ICommand LoadDatabases
         {
             get

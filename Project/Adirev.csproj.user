@@ -22,6 +22,9 @@
     <Compile Update="View\Placeholder.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\StartingSettingsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\AboutProgramInfoWindow.xaml">
@@ -40,6 +43,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\Placeholder.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\StartingSettingsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

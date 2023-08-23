@@ -11,6 +11,9 @@
         <Behaviors:EventTrigger EventName="Closed">
             <Behaviors:InvokeCommandAction Command="{Binding SaveLastSesion}" />
         </Behaviors:EventTrigger>
+        <Behaviors:EventTrigger EventName="Closing">
+            <Behaviors:InvokeCommandAction Command="{Binding WindowClosing}" PassEventArgsToCommand="True"/>
+        </Behaviors:EventTrigger>
     </Behaviors:Interaction.Triggers>
     <Window.DataContext>
         <mw:MainWindowViewModel/>

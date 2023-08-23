@@ -17,7 +17,18 @@ namespace Adirev.Service
                 System.IO.File.WriteAllText($@"{path}\{DatabaseManager.GetNameTypeScript(type)}\{file}.sql", contents);
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
+        }
+
+        public static void SaveFile(string path, string file, string extension, string contents)
+        {
+            file = DeleteInvalidFileNameChars(file);
+            try
+            {
+                System.IO.File.WriteAllText($@"{path}\{file}.{extension}", contents);
+            }
+            catch (Exception ex)
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
         }
 
         public static void CreateDirectory(string path, string directory)
@@ -28,7 +39,7 @@ namespace Adirev.Service
                 System.IO.Directory.CreateDirectory($@"{path}\{directory}");
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
         }
 
         public static void DeleteDirectory(string path)
@@ -41,7 +52,7 @@ namespace Adirev.Service
                 { di.Delete(true); }
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
         }
 
         public static void WriteToBinaryFile<T>(string filePath, T objetToWrite, bool append = false)
@@ -55,7 +66,7 @@ namespace Adirev.Service
                 }
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
         }
 
         public static T ReadFromBinaryFile<T>(string filePath)
@@ -70,6 +81,7 @@ namespace Adirev.Service
             }
             catch (Exception ex)
             {
+                Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod());
                 return (T)Activator.CreateInstance(typeof(T));
             }
         }
@@ -87,7 +99,7 @@ namespace Adirev.Service
                 }
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
 
             return list;
         }

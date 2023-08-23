@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Adirev.Service;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -66,6 +67,14 @@ namespace Adirev.Model
         {
             LogOperacion = string.Empty;
             LogHistory = string.Empty;
+        }
+
+        public static void SaveError(string message, string innerMessage, string module, string additionalInformation = null)
+        {
+            additionalInformation = additionalInformation == null ? string.Empty : $"({additionalInformation})";
+            string content = $"[{module}]{additionalInformation} {message} {innerMessage}";
+            FileManager.CreateDirectory(ApplicationGlobalSettings.PathFolderApplication, ApplicationGlobalSettings.FolderLog);
+            FileManager.SaveFile(ApplicationGlobalSettings.PathlogApplication, $"LOG{DateTime.Now}_{DateTime.Now.Millisecond}", "txt", content);
         }
         #endregion
     }

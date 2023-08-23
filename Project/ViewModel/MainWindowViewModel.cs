@@ -440,6 +440,7 @@ namespace Adirev.ViewModel
             OnPropertyChanged(nameof(EntitiesDataBase));
             OnPropertyChanged(nameof(EntityDataBaseSelected));
             OnPropertyChanged(nameof(Path));
+            OnPropertyChanged(nameof(ServerIsEnabled));
             OnPropertyChanged(nameof(ServerButtonChar));
             OnPropertyChanged(nameof(DatabaseFunctions));
             OnPropertyChanged(nameof(DatabaseProcedures));
@@ -582,6 +583,7 @@ namespace Adirev.ViewModel
                     OnPropertyChanged(nameof(PathIsEnabled));
                     OnPropertyChanged(nameof(Path));
                     OnPropertyChanged(nameof(Server));
+                    OnPropertyChanged(nameof(ServerIsEnabled));
                     OnPropertyChanged(nameof(ServerButtonChar));
                     OnPropertyChanged(nameof(DatabaseFunctions));
                     OnPropertyChanged(nameof(DatabaseProcedures));

@@ -1,0 +1,145 @@
+﻿<UserControl x:Class="Adirev.View.ScheduleItemControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Adirev.View"
+             xmlns:Behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" Background="{StaticResource WindowBackgound}"
+             d:DesignHeight="400" d:DesignWidth="800">
+    <Border Background="{StaticResource WindowBackgound}" BorderBrush="{Binding BorderFormColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" BorderThickness="1" CornerRadius="5,5,5,5" Visibility="{Binding VisibilityWindow, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="25" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="AUTO" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Button Content="🗑️" BorderThickness="0" Click="HideWindow" />
+            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Title, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Background="{StaticResource TextContainerBackground}"/>
+            <Button Grid.Row="0" Grid.Column="2" Content="⯆" BorderThickness="0" Click="ShowForm"/>
+
+            <Grid Grid.Row="1" Grid.ColumnSpan="3" Visibility="{Binding VisibilityForm, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="50*" />
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="75*" />
+                    <ColumnDefinition Width="35" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="AUTO" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Label Content="Name" Grid.Row="0" Grid.Column="1" Margin="0,5,0,0" />
+                <Border Grid.Row="0" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}">
+                    <TextBox Text="{Binding NameSchedule, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4" IsEnabled="False"/>
+                </Border>
+
+                <Label Content="System" Grid.Row="1" Grid.Column="1" Margin="0,5,0,0" />
+                <Border Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding SystemsList, ValidatesOnDataErrors=True, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" SelectedItem="{Binding SystemDatabase, ValidatesOnDataErrors=True, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                    </Grid>
+                </Border>
+
+                <Label Content="Server" Grid.Row="2" Grid.Column="1" Margin="0,5,0,0" />
+                <Border Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="35" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Server, ValidatesOnDataErrors=True, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" IsEnabled="{Binding ServerIsEnabled, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"  Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4" />
+                        <Button Grid.Row="0" Grid.Column="1" Content="{Binding ServerButtonChar, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Click="LoadDatabases" Style="{StaticResource ButtonTextBox}"/>
+                    </Grid>
+                </Border>
+
+                <Label Content="Database" Grid.Row="3" Grid.Column="1" Visibility="{Binding EntitiesDataBaseVisibility}" Margin="0,5,0,0" />
+                <Border Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}" Visibility="{Binding EntitiesDataBaseVisibility}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="35" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding EntitiesDataBase, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" SelectedItem="{Binding EntityDataBaseSelected, ValidatesOnDataErrors=True, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" IsEnabled="{Binding DatabaseIsEnabled}" Visibility="{Binding EntitiesDataBaseVisibility}" >
+                            <Behaviors:Interaction.Triggers>
+                                <Behaviors:EventTrigger EventName="SelectionChanged">
+                                    <Behaviors:InvokeCommandAction Command="{Binding LoadDatabaseItems}" />
+                                </Behaviors:EventTrigger>
+                            </Behaviors:Interaction.Triggers>
+                        </ComboBox>
+                        <Button Content="🔌" Grid.Column="2" Click="LoadCredentials"/>
+                    </Grid>
+                </Border>
+
+                <Label Content="Path save" Grid.Row="4" Grid.Column="1" Margin="0,5,0,0" />
+                <Border Grid.Row="4" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="35" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Path, ValidatesOnDataErrors=True, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" IsEnabled="False"  Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4" />
+                        <Button Grid.Row="3" Grid.Column="4" Content="..." Click="LoadPath" IsEnabled="{Binding PathIsEnabled}" BorderThickness="0,0,1,0" Style="{StaticResource ButtonTextBox}"/>
+                    </Grid>
+                </Border>
+
+
+                <Label Content="Frequency" Grid.Row="5" Grid.Column="1" Margin="0,5,0,0"/>
+                <StackPanel Orientation="Vertical" Grid.Row="5" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <RadioButton Foreground="WhiteSmoke" IsChecked="{Binding IsCheckedHour, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}">Hourly</RadioButton>
+                    <RadioButton Foreground="WhiteSmoke" IsChecked="{Binding IsCheckedDay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}">Daily</RadioButton>
+                    <RadioButton Foreground="WhiteSmoke" IsChecked="{Binding IsCheckedWeek, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}">Weekly</RadioButton>
+                </StackPanel>
+
+                <Label Content="Start time" Grid.Row="6" Grid.Column="1" Margin="0,5,0,0"/>
+                <Border Grid.Row="6" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}">
+                    <TextBox Text="{Binding Time, ValidatesOnDataErrors=True, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"  Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4"/>
+                </Border>
+
+                <Label Content="Start date" Grid.Row="7" Grid.Column="1" Margin="0,5,0,0" Visibility="{Binding VisibilityListDay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                <Border Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" BorderBrush="{StaticResource BorderBrushColor}" BorderThickness="1" Margin="0,5,0,5" CornerRadius="5,5,5,5" Background="{StaticResource TextContainerBackground}" Visibility="{Binding VisibilityListDay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}">
+                    <TextBox Text="{Binding Day, ValidatesOnDataErrors=True, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4"/>
+                </Border>
+
+                <Label Content="Active" Grid.Row="8" Grid.Column="1" Margin="0,5,0,0"/>
+                <CheckBox IsChecked="{Binding IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Grid.Row="8" Grid.Column="3" Foreground="WhiteSmoke" Content="Active"  Margin="0,10,0,0"/>
+
+                <Label Content="Last execution time" Grid.Row="9" Grid.Column="1" Margin="0,5,0,0" Visibility="{Binding VisibilityLastExecutionTime, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                <Label Content="{Binding RealLastExecutionTime, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Visibility="{Binding VisibilityLastExecutionTime, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" ContentStringFormat="dd-MM-yyyy HH:mm:ss" Grid.Row="9" Grid.Column="3" Margin="0,5,0,0"/>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

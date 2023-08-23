@@ -94,7 +94,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Server}" IsEnabled="{Binding ServerIsEnabled}"  Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" Margin="5,4,0,4" />
-                    <Button Grid.Row="0" Grid.Column="1" Content="{Binding ServerButtonChar}" Command="{Binding LoadDatabases}" IsEnabled="{Binding ServerIsEnabled}" Style="{StaticResource ButtonTextBox}"/>
+                    <Button Grid.Row="0" Grid.Column="1" Content="{Binding ServerButtonChar}" Command="{Binding LoadDatabases}" Style="{StaticResource ButtonTextBox}"/>
                 </Grid>
             </Border>
 
@@ -179,7 +179,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Search.."  Value="{Binding FunctionsTextSearchFields, Mode=TwoWay}" />
+                            <control:Placeholder Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" PlaceholderText="Search.." Value="{Binding FunctionsTextSearchFields, Mode=TwoWay}" />
                         </Grid>
                     </Border>
                     <CheckBox Content="Select All" IsChecked="{Binding IsCheckedFunctions}" Grid.Row="2" Margin="0,5,0,5" Command="{Binding ChangeSelectionAllFunction}" Foreground="{StaticResource TextColor}" Grid.ColumnSpan="2"/>

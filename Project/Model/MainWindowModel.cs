@@ -58,6 +58,7 @@ namespace Adirev.Models
 
         #region Objects
         private ServerManager ServerDatabase { get; set; }
+        ScheduleManager sheduleManager;
         #endregion
 
         #region Properties
@@ -332,7 +333,7 @@ namespace Adirev.Models
         public MainWindowModel()
         {
             CheckProgramIsRunning();
-
+            sheduleManager = new ScheduleManager();
             ModeMainWindow = ModeWindow.ExportDatabase;
             TIFunctionsName = "Functions 0/0";
             IsCheckedFunctions = true;
@@ -374,8 +375,8 @@ namespace Adirev.Models
 
             LoadMenuItem();
 
-            LoadSession($@"{ApplicationSession.PathHistoryApplication}\lastsesion.{ApplicationSession.Extension}");
-            LoadSettings(@$"{ApplicationSession.PathSettingsApplication}\settings.{ApplicationSession.Extension}");
+            LoadSession($@"{ApplicationGlobalSettings.PathHistoryApplication}\lastsesion.{ApplicationGlobalSettings.Extension}");
+            LoadSettings(@$"{ApplicationGlobalSettings.PathSettingsApplication}\settings.{ApplicationGlobalSettings.Extension}");
 
             ApplicationStatus.FirstRun = false;
 
@@ -407,12 +408,12 @@ namespace Adirev.Models
                 NotifyIcon.Icon = new System.Drawing.Icon(@"Images/Icon_app_1.ico");
                 NotifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
                 NotifyIcon.ContextMenuStrip.Items.Add("Close", null, CloseApp);
-                NotifyIcon.MouseDoubleClick += notifyIconMouseDoubleClick;
+                NotifyIcon.MouseDoubleClick += NotifyIconMouseDoubleClick;
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
         }
-        private void notifyIconMouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void NotifyIconMouseDoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             Application curApp = Application.Current;
             Window mainWindow = curApp.MainWindow;
@@ -428,9 +429,9 @@ namespace Adirev.Models
         }
         private void DeleteHistory()
         {
-            var listDirectories = FileManager.GetDirectories(ApplicationSession.PathHistoryApplication);
+            var listDirectories = FileManager.GetDirectories(ApplicationGlobalSettings.PathHistoryApplication);
             foreach (var item in listDirectories)
-            { FileManager.DeleteDirectory(@$"{ApplicationSession.PathHistoryApplication}\{FileManager.DeleteInvalidFileNameChars(item)}"); }
+            { FileManager.DeleteDirectory(@$"{ApplicationGlobalSettings.PathHistoryApplication}\{FileManager.DeleteInvalidFileNameChars(item)}"); }
 
             LoadMenuItem();
         }
@@ -440,10 +441,10 @@ namespace Adirev.Models
             ObservableCollection<object> historyItems = new ObservableCollection<object>();
 
             #region Menu item history
-            var listDirectories = FileManager.GetDirectories(ApplicationSession.PathHistoryApplication);
+            var listDirectories = FileManager.GetDirectories(ApplicationGlobalSettings.PathHistoryApplication);
             foreach (var item in listDirectories)
             {
-                string pathFileSession = @$"{ApplicationSession.PathHistoryApplication}\{FileManager.DeleteInvalidFileNameChars(item)}\{FileManager.DeleteInvalidFileNameChars(item)}.{ApplicationSession.Extension}";
+                string pathFileSession = @$"{ApplicationGlobalSettings.PathHistoryApplication}\{FileManager.DeleteInvalidFileNameChars(item)}\{FileManager.DeleteInvalidFileNameChars(item)}.{ApplicationGlobalSettings.Extension}";
                 historyItems.Add(new MenuItemViewModel(LoadSession, MenuItemClickInvoke, pathFileSession) { Header = item });
             }
 
@@ -455,7 +456,7 @@ namespace Adirev.Models
             try
             { historyItems.Add(new Separator()); }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
             #endregion
 
             #region Menu item delete history
@@ -464,7 +465,7 @@ namespace Adirev.Models
                 historyItems.Add(new MenuItemViewModel(DeleteHistory, MenuItemClickInvoke) { Header = "Clear history" });
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
             #endregion
 
             #region Menu item 
@@ -489,6 +490,13 @@ namespace Adirev.Models
                             new MenuItemViewModel(ClearLogs, MenuItemClickInvoke) { Header = "Clear logs" }
                         }
                     },
+                    new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "Settings" ,
+                        MenuItems = new ObservableCollection<object>
+                        {
+                            new MenuItemViewModel(OpenWindowStartingSettings, MenuItemClickInvoke) { Header = "Starting" },
+                            new MenuItemViewModel(OpenWindowSchedule, MenuItemClickInvoke) { Header = "Schedule" }
+                        }
+                    },
                     new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "Help" ,
                         MenuItems = new ObservableCollection<object>
                         {
@@ -499,7 +507,7 @@ namespace Adirev.Models
                 };
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
             #endregion
         }
 
@@ -642,14 +650,14 @@ namespace Adirev.Models
 
         private void SaveCurentSesion()
         {
-            string path = ApplicationSession.PathHistoryApplication;
+            string path = ApplicationGlobalSettings.PathHistoryApplication;
             FileManager.CreateDirectory(path, @$"{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}");
 
             ApplicationSession applicationSession = new ApplicationSession() { System = this.SystemDataBaseSelected, Server = this.Server, Database = this.EntityDataBaseSelected, Path = this.Path };
             applicationSession.SetLogin(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Login);
             applicationSession.SetPassword(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Password);
 
-            path += @$"\{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}\{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}.{ApplicationSession.Extension}";
+            path += @$"\{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}\{FileManager.DeleteInvalidFileNameChars(Server)}.{FileManager.DeleteInvalidFileNameChars(EntityDataBaseSelected)}.{ApplicationGlobalSettings.Extension}";
 
             FileManager.WriteToBinaryFile<ApplicationSession>(path, applicationSession);
         }
@@ -694,39 +702,34 @@ namespace Adirev.Models
         }
         private void OpenWindowStartingSettings()
         {
-            StartingSettingsWindow ssw = new StartingSettingsWindow();
-
-            Application curApp = Application.Current;
-            Window mainWindow = curApp.MainWindow;
-            ssw.Left = mainWindow.Left + ((mainWindow.Width - ssw.Width) / 2);
-            ssw.Top = mainWindow.Top + ((mainWindow.Height - ssw.Height) / 2);
-
-            ssw.ShowDialog();
+            StartingSettingsWindow window = new StartingSettingsWindow();
+            OpenWindow(window);
+        }
+        private void OpenWindowSchedule()
+        {
+            ScheduleWindow window = new ScheduleWindow();
+            OpenWindow(window);
         }
         private void OpenWindowAboutProgramInfo()
         {
-            AboutProgramInfoWindow apiw = new AboutProgramInfoWindow();
-
-            Application curApp = Application.Current;
-            Window mainWindow = curApp.MainWindow;
-            apiw.Left = mainWindow.Left + ((mainWindow.Width - apiw.Width) / 2);
-            apiw.Top = mainWindow.Top + ((mainWindow.Height - apiw.Height) / 2);
-
-            apiw.ShowDialog();
+            AboutProgramInfoWindow window = new AboutProgramInfoWindow();
+            OpenWindow(window);
         }
 
         private void OpenWindowLicense()
         {
-            LicenseWindow lw = new LicenseWindow();
-
+            LicenseWindow window = new LicenseWindow();
+            OpenWindow(window);
+        }
+        private void OpenWindow(Window window)
+        {
             Application curApp = Application.Current;
             Window mainWindow = curApp.MainWindow;
-            lw.Left = mainWindow.Left + ((mainWindow.Width - lw.Width) / 2);
-            lw.Top = mainWindow.Top + ((mainWindow.Height - lw.Height) / 2);
+            window.Left = mainWindow.Left + ((mainWindow.Width - window.Width) / 2);
+            window.Top = mainWindow.Top + ((mainWindow.Height - window.Height) / 2);
 
-            lw.ShowDialog();
+            window.ShowDialog();
         }
-
         private void WindowHide()
         {
             NotifyIcon.BalloonTipTitle = "Minimize to Tray App";
@@ -786,6 +789,7 @@ namespace Adirev.Models
                     DatabaseIsEnabled = true;
                     PathIsEnabled = true;
                     Connected = true;
+                    ServerIsEnabled = false;
                 }
             }
             else
@@ -797,6 +801,7 @@ namespace Adirev.Models
                 DatabaseIsEnabled = false;
                 PathIsEnabled = false;
                 Connected = false;
+                ServerIsEnabled = true;
                 Server = "";
                 Path = "";
 
@@ -881,11 +886,11 @@ namespace Adirev.Models
             applicationSession.SetLogin(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Login);
             applicationSession.SetPassword(ServerDatabase.Databases.Where(x => x.DatabaseEntity == EntityDataBaseSelected).FirstOrDefault()?.Password);
 
-            FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderApplication);
-            FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderHistory);
-            FileManager.CreateDirectory(ApplicationSession.PathApplication, ApplicationSession.FolderSettings);
-            string pathSession = @$"{ApplicationSession.PathHistoryApplication}\lastsesion.{ApplicationSession.Extension}";
-            string pathSettings = @$"{ApplicationSession.PathSettingsApplication}\settings.{ApplicationSession.Extension}";
+            FileManager.CreateDirectory(ApplicationGlobalSettings.PathApplication, ApplicationGlobalSettings.FolderApplication);
+            FileManager.CreateDirectory(ApplicationGlobalSettings.PathApplication, ApplicationGlobalSettings.FolderHistory);
+            FileManager.CreateDirectory(ApplicationGlobalSettings.PathApplication, ApplicationGlobalSettings.FolderSettings);
+            string pathSession = @$"{ApplicationGlobalSettings.PathHistoryApplication}\lastsesion.{ApplicationGlobalSettings.Extension}";
+            string pathSettings = @$"{ApplicationGlobalSettings.PathSettingsApplication}\settings.{ApplicationGlobalSettings.Extension}";
 
             FileManager.WriteToBinaryFile<ApplicationSession>(pathSession, applicationSession);
             FileManager.WriteToBinaryFile<ApplicationGlobalSettings>(pathSettings, ApplicationStatus.Settings);

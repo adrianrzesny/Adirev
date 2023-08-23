@@ -19,7 +19,13 @@
     <Compile Update="View\LogWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\Placeholder.xaml.cs">
+    <Compile Update="View\PlaceholderControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ScheduleItemControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\ScheduleWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\StartingSettingsWindow.xaml.cs">
@@ -42,7 +48,13 @@
     <Page Update="View\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\Placeholder.xaml">
+    <Page Update="View\PlaceholderControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ScheduleItemControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\ScheduleWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\StartingSettingsWindow.xaml">

@@ -16,7 +16,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBox x:Name="PlaceholderTextBox" Grid.Row="0" Grid.Column="0" Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" VerticalAlignment="Center" GotFocus="PlaceholderTextBox_GotFocus" LostFocus="PlaceholderTextBox_LostFocus" TextChanged="PlaceholderTextBox_TextChanged" Text="Wyszukaj.."/>
+                <TextBox x:Name="PlaceholderTextBox" Grid.Row="0" Grid.Column="0" Background="{StaticResource TextContainerBackground}" Foreground="{StaticResource TextColor}" BorderThickness="0" VerticalAlignment="Center" GotFocus="PlaceholderTextBox_GotFocus" LostFocus="PlaceholderTextBox_LostFocus" TextChanged="PlaceholderTextBox_TextChanged" Text="{Binding PlaceholderText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
                 <Button Grid.Row="0" Grid.Column="1" Content="X" Style="{StaticResource ButtonTextBox}" Click="ButtonClear_Click"/>
             </Grid>
         </Border>

@@ -25,6 +25,11 @@ namespace Adirev.Service
             ALL,
             CHECKED
         }
+        public enum Status
+        {
+            OK,
+            LOGIN_FAIlED
+        }
         #endregion
 
         #region Objects
@@ -38,6 +43,7 @@ namespace Adirev.Service
         public string DatabaseEntity { get; set; } = null;
         public string Login { get; set; } = null;
         public string Password { get; set; } = null;
+        public Status StatusServer { get; set; }
         public List<string> DatabaseFunctions { get; set; }
         public List<string> DatabaseProcedures { get; set; }
         public List<string> DatabaseTables { get; set; }
@@ -83,15 +89,23 @@ namespace Adirev.Service
                 }
                 else
                 { result = false; }
+
+                StatusServer = Status.OK;
             }
             catch (Exception ex)
             {
                 result = false;
 
+                StatusServer = Status.LOGIN_FAIlED;
+
                 if (ServerManager.Ping(Server) && ex.Message.Contains("Login failed"))
                 { LoginToDatabase(() => { result = LoadItems(); }); }
                 else
-                { LoggerApplication.AddLog(ex.Message, true); }
+                {
+                    LoggerApplication.AddLog(ex.Message, true);
+                    Logger.SaveError(ex.Message, ex.InnerException?.Message, "DatabaseManager->LoadItems");
+                }
+
             }
 
             return result;
@@ -107,13 +121,21 @@ namespace Adirev.Service
 
                 if (this.DatabaseEntity != null && db != null)
                 { listDatabaseItem = db.GetItemsContents(type, this, opcionExport, listToDownload); }
+
+                StatusServer = Status.OK;
             }
             catch (Exception ex)
             {
+                StatusServer = Status.LOGIN_FAIlED;
+
                 if (ex.Message.Contains("Login failed"))
                 { LoginToDatabase(() => { GetItemsContents(type, opcionExport, listToDownload); }); }
                 else
-                { LoggerApplication.AddLog(ex.Message, true); }
+                {
+                    LoggerApplication.AddLog(ex.Message, true);
+                    Logger.SaveError(ex.Message, ex.InnerException?.Message, "DatabaseManager->LoadItems");
+                }
+
             }
 
             return listDatabaseItem;

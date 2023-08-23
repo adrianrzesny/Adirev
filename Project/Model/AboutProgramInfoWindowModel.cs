@@ -36,7 +36,7 @@ namespace Adirev.Model
                 }
             }
             catch (Exception ex)
-            { }
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
         }
         #endregion
     }

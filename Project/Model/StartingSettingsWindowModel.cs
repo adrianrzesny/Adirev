@@ -48,8 +48,8 @@ namespace Adirev.Model
             ApplicationStatus.Settings.Autorun = Autorun;
             ApplicationStatus.Settings.HideWork = HideWork;
 
-            string pathSettings = @$"{ApplicationSession.PathSettingsApplication}\settings.{ApplicationSession.Extension}";
-            FileManager.CreateDirectory(ApplicationSession.PathFolderApplication, ApplicationSession.FolderSettings);
+            string pathSettings = @$"{ApplicationGlobalSettings.PathSettingsApplication}\settings.{ApplicationGlobalSettings.Extension}";
+            FileManager.CreateDirectory(ApplicationGlobalSettings.PathFolderApplication, ApplicationGlobalSettings.FolderSettings);
             FileManager.WriteToBinaryFile<ApplicationGlobalSettings>(pathSettings, ApplicationStatus.Settings);
 
             AddToAutorun(Autorun); 

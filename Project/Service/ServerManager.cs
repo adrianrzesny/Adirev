@@ -65,7 +65,11 @@ namespace Adirev.Service
                 if (ex.Message.Contains("Login failed"))
                 { LoginToDatabase(() => { result = LoadDatabases(); }); }
                 else
-                { LoggerApplication.AddLog(ex.Message, true); }
+                {
+                    LoggerApplication.AddLog(ex.Message, true);
+                    Logger.SaveError(ex.Message, ex.InnerException?.Message, "ServerManager->LodDatabases");
+                }
+
             }
 
             return result;
@@ -94,7 +98,7 @@ namespace Adirev.Service
                     { result = true; }
                 }
             }
-            catch (PingException)
+            catch (PingException ex)
             { }
             finally
             {

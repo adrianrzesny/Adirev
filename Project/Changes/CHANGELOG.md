@@ -1,3 +1,10 @@
+# 2.0.0
+[NEW] Added the ability to set work in the background
+[NEW] Added the ability to set autostart at system startup
+[NEW] Added configuration of schedules
+[NEW] Added error logging in the application directory
+[IMPROVED] Blocking of the server field during connection has been changed
+
 # 1.0.4
 [NEW] A window displaying the program's license has been added 
 [FIXED] The ability to manually change the save path was blocked 

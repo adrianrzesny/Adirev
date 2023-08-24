@@ -1,3 +1,6 @@
+# 2.0.1
+[FIXED] Improved schedule export path
+
 # 2.0.0
 [NEW] Added the ability to set work in the background
 [NEW] Added the ability to set autostart at system startup

@@ -116,8 +116,6 @@ namespace Adirev.Service
             List<DatabaseItem> list = db.GetItemsContents(type, DatabaseManager.OpcionExport.ALL, null);
 
             string path = scheduleItem.Path;
-            path += $@"\{FileManager.DeleteInvalidFileNameChars(db.DatabaseEntity)}";
-            FileManager.CreateDirectory(scheduleItem.Path, FileManager.DeleteInvalidFileNameChars(db.DatabaseEntity));
             FileManager.CreateDirectory(path, DatabaseManager.GetNameTypeScript(type));
 
             foreach (var item in list)

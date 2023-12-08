@@ -189,8 +189,8 @@ namespace Adirev.Service
 
                                 if (is_export == true)
                                 {
-                                    LoggerApplication.AddLog($"Export ( {database.Server}.{database.DatabaseEntity}->{DatabaseManager.GetNameTypeScript(type)} {name_item} )");
                                     listItemsContents.Add(new DatabaseItem() { Name = name_item, Contents = content });
+                                    LoggerApplication.AddLog($"Export ( {database.Server}.{database.DatabaseEntity}->{DatabaseManager.GetNameTypeScript(type)} {name_item} )");
                                 }
                             }
                         }

@@ -42,6 +42,19 @@ namespace Adirev.Service
             { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
         }
 
+        public static void DeleteFile(string path)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+            catch (Exception ex)
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
+        }
+
         public static void DeleteDirectory(string path)
         {
             try
@@ -84,6 +97,24 @@ namespace Adirev.Service
                 Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod());
                 return (T)Activator.CreateInstance(typeof(T));
             }
+        }
+
+        public static List<string> GetFiles(string path)
+        {
+            List<string> list = new List<string>();
+            try
+            {
+                string[] files = Directory.GetFiles(path);
+
+                foreach (var item in files)
+                {
+                    list.Add(item.Replace(@$"{path}\", "").Replace(".sql",""));
+                }
+            }
+            catch (Exception ex)
+            { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
+
+            return list;
         }
 
         public static List<string> GetDirectories(string directoriesPath)

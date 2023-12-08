@@ -1,3 +1,6 @@
+# 2.0.3
+[NEW] Added removal of scripts that are no longer in the database during full export
+
 # 2.0.2
 [FIXED] Improved function export algorithms
 

@@ -558,6 +558,8 @@ namespace Adirev.Models
 
                 foreach (var item in list)
                 { FileManager.SaveFileSQL(path, item.Name, item.Contents, type); }
+
+                ClearScript(type, $@"{path}\{DatabaseManager.GetNameTypeScript(type)}", db.GetItemsContents(type, DatabaseManager.OpcionExport.ALL, null), opcionExport);
             }
         }
 
@@ -612,6 +614,58 @@ namespace Adirev.Models
         private void MenuItemClickInvoke()
         {
             ClickMenuItem?.Invoke();
+        }
+
+        private void ClearScript(DatabaseManager.TypeScript type, string path, List<DatabaseItem> listItem, DatabaseManager.OpcionExport opcionExport)
+        {
+            var listFile = FileManager.GetFiles(path);
+            List<string> listToDelete = new List<string>();
+
+            if (opcionExport == DatabaseManager.OpcionExport.CHECKED)
+            {
+                switch (type)
+                {
+                    case DatabaseManager.TypeScript.FUNCTIONS:
+                        if (DatabaseFunctions.Where(x => x.IsSelected).Count() == DatabaseFunctions.Count())
+                        {
+                            listToDelete = listFile.Except(DatabaseFunctions.Select(x => x.Name)).ToList();
+                        }
+                        break;
+                    case DatabaseManager.TypeScript.PROCEDURES:
+                        if (DatabaseProcedures.Where(x => x.IsSelected).Count() == DatabaseProcedures.Count())
+                        {
+                            listToDelete = listFile.Except(DatabaseProcedures.Select(x => x.Name)).ToList();
+                        }
+                        break;
+                    case DatabaseManager.TypeScript.TABLES:
+                        if (DatabaseTables.Where(x => x.IsSelected).Count() == DatabaseTables.Count())
+                        {
+                            listToDelete = listFile.Except(DatabaseTables.Select(x => x.Name)).ToList();
+                        }
+                        break;
+                    case DatabaseManager.TypeScript.TRIGGERS:
+                        if (DatabaseTriggers.Where(x => x.IsSelected).Count() == DatabaseTriggers.Count())
+                        {
+                            listToDelete = listFile.Except(DatabaseTriggers.Select(x => x.Name)).ToList();
+                        }
+                        break;
+                    case DatabaseManager.TypeScript.VIEWS:
+                        if (DatabaseViews.Where(x => x.IsSelected).Count() == DatabaseViews.Count())
+                        {
+                            listToDelete = listFile.Except(DatabaseViews.Select(x => x.Name)).ToList();
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                listToDelete = listFile.Except(listItem.Select(x => x.Name)).ToList();
+            }
+
+            foreach (var item in listToDelete)
+            {
+                FileManager.DeleteFile($@"{path}\{item}.sql");
+            }
         }
 
         private void SaveScriptsDatabase()

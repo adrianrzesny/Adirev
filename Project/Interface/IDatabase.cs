@@ -11,5 +11,6 @@ namespace Adirev.Interface
         public List<string> GetItems(DatabaseManager.TypeScript type, DatabaseManager database);
         public List<string> GetDatabases(ServerManager server);
         public List<DatabaseItem> GetItemsContents(DatabaseManager.TypeScript type, DatabaseManager database, DatabaseManager.OpcionExport opcionExport, List<string> listToDownload = null);
+        public List<string> GetTypeObjectDatabase(DatabaseManager.TypeScript type);
     }
 }

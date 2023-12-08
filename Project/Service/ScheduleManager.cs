@@ -98,11 +98,11 @@ namespace Adirev.Service
 
             if (ServerManager.Ping(scheduleItem.Server))
             {
-                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.FN) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
-                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.P) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
-                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.U) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
-                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.TR) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
-                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.V) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
+                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.FUNCTIONS) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
+                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.PROCEDURES) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
+                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.TABLES) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
+                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.TRIGGERS) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
+                resultSave = SaveScript(scheduleItem, DatabaseManager.TypeScript.VIEWS) == DatabaseManager.Status.LOGIN_FAIlED ? false : resultSave;
             }
             else
             { resultSave = false; }

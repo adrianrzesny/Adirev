@@ -14,11 +14,11 @@ namespace Adirev.Service
         #region Enum
         public enum TypeScript
         {
-            FN,
-            TR,
-            P,
-            V,
-            U
+            FUNCTIONS,
+            PROCEDURES,
+            TABLES,
+            TRIGGERS,
+            VIEWS
         }
         public enum OpcionExport
         {
@@ -56,15 +56,15 @@ namespace Adirev.Service
         {
             switch (type)
             {
-                case DatabaseManager.TypeScript.FN:
+                case DatabaseManager.TypeScript.FUNCTIONS:
                     return "Functions";
-                case DatabaseManager.TypeScript.TR:
+                case DatabaseManager.TypeScript.TRIGGERS:
                     return "Triggers";
-                case DatabaseManager.TypeScript.P:
+                case DatabaseManager.TypeScript.PROCEDURES:
                     return "Procedures";
-                case DatabaseManager.TypeScript.V:
+                case DatabaseManager.TypeScript.VIEWS:
                     return "Views";
-                case DatabaseManager.TypeScript.U:
+                case DatabaseManager.TypeScript.TABLES:
                     return "Tables";
                 default:
                     return "X";
@@ -81,11 +81,11 @@ namespace Adirev.Service
 
                 if (this.DatabaseEntity != null && db != null && result == true)
                 {
-                    DatabaseFunctions = db.GetItems(DatabaseManager.TypeScript.FN, this);
-                    DatabaseProcedures = db.GetItems(DatabaseManager.TypeScript.P, this);
-                    DatabaseTables = db.GetItems(DatabaseManager.TypeScript.U, this);
-                    DatabaseTriggers = db.GetItems(DatabaseManager.TypeScript.TR, this);
-                    DatabaseViews = db.GetItems(DatabaseManager.TypeScript.V, this);
+                    DatabaseFunctions = db.GetItems(DatabaseManager.TypeScript.FUNCTIONS, this);
+                    DatabaseProcedures = db.GetItems(DatabaseManager.TypeScript.PROCEDURES, this);
+                    DatabaseTables = db.GetItems(DatabaseManager.TypeScript.TABLES, this);
+                    DatabaseTriggers = db.GetItems(DatabaseManager.TypeScript.TRIGGERS, this);
+                    DatabaseViews = db.GetItems(DatabaseManager.TypeScript.VIEWS, this);
                 }
                 else
                 { result = false; }

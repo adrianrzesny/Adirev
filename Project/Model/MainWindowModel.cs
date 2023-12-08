@@ -618,11 +618,11 @@ namespace Adirev.Models
         {
             SetVisibleProgressBar(true);
 
-            SaveScript(DatabaseManager.TypeScript.FN, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseFunctions.Where(x => x.IsSelected).Select(x => x.Name).ToList());
-            SaveScript(DatabaseManager.TypeScript.P, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseProcedures.Where(x => x.IsSelected).Select(x => x.Name).ToList());
-            SaveScript(DatabaseManager.TypeScript.U, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseTables.Where(x => x.IsSelected).Select(x => x.Name).ToList());
-            SaveScript(DatabaseManager.TypeScript.TR, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseTriggers.Where(x => x.IsSelected).Select(x => x.Name).ToList());
-            SaveScript(DatabaseManager.TypeScript.V, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseViews.Where(x => x.IsSelected).Select(x => x.Name).ToList());
+            SaveScript(DatabaseManager.TypeScript.FUNCTIONS, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseFunctions.Where(x => x.IsSelected).Select(x => x.Name).ToList());
+            SaveScript(DatabaseManager.TypeScript.PROCEDURES, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseProcedures.Where(x => x.IsSelected).Select(x => x.Name).ToList());
+            SaveScript(DatabaseManager.TypeScript.TABLES, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseTables.Where(x => x.IsSelected).Select(x => x.Name).ToList());
+            SaveScript(DatabaseManager.TypeScript.TRIGGERS, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseTriggers.Where(x => x.IsSelected).Select(x => x.Name).ToList());
+            SaveScript(DatabaseManager.TypeScript.VIEWS, DatabaseManager.OpcionExport.CHECKED, EntityDataBaseSelected, DatabaseViews.Where(x => x.IsSelected).Select(x => x.Name).ToList());
 
             SetVisibleProgressBar(false);
             LoggerApplication.AddLog($"Export completed ( {Server}.{EntityDataBaseSelected} -> {Path} )", true);
@@ -637,11 +637,11 @@ namespace Adirev.Models
 
             foreach (var item in DatabasesEntities.Where(x => x.IsSelected == true).Select(x => x.Name))
             {
-                SaveScript(DatabaseManager.TypeScript.FN, DatabaseManager.OpcionExport.ALL, item);
-                SaveScript(DatabaseManager.TypeScript.P, DatabaseManager.OpcionExport.ALL, item);
-                SaveScript(DatabaseManager.TypeScript.U, DatabaseManager.OpcionExport.ALL, item);
-                SaveScript(DatabaseManager.TypeScript.TR, DatabaseManager.OpcionExport.ALL, item);
-                SaveScript(DatabaseManager.TypeScript.V, DatabaseManager.OpcionExport.ALL, item);
+                SaveScript(DatabaseManager.TypeScript.FUNCTIONS, DatabaseManager.OpcionExport.ALL, item);
+                SaveScript(DatabaseManager.TypeScript.PROCEDURES, DatabaseManager.OpcionExport.ALL, item);
+                SaveScript(DatabaseManager.TypeScript.TABLES, DatabaseManager.OpcionExport.ALL, item);
+                SaveScript(DatabaseManager.TypeScript.TRIGGERS, DatabaseManager.OpcionExport.ALL, item);
+                SaveScript(DatabaseManager.TypeScript.VIEWS, DatabaseManager.OpcionExport.ALL, item);
             }
 
             SetVisibleProgressBar(false);

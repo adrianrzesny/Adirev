@@ -1,3 +1,6 @@
+# 2.0.2
+[FIXED] Improved function export algorithms
+
 # 2.0.1
 [FIXED] Improved schedule export path
 

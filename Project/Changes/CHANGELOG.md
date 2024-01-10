@@ -1,3 +1,6 @@
+# 2.0.4
+[NEW] Added a menu option to open the application logs folder
+
 # 2.0.3
 [NEW] Added removal of scripts that are no longer in the database during full export
 

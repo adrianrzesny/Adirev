@@ -486,8 +486,9 @@ namespace Adirev.Models
                     new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "Logs" ,
                         MenuItems = new ObservableCollection<object>
                         {
-                            new MenuItemViewModel(OpenLogWindow, MenuItemClickInvoke) { Header = "Show logs" },
-                            new MenuItemViewModel(ClearLogs, MenuItemClickInvoke) { Header = "Clear logs" }
+                            new MenuItemViewModel(OpenLogSessionWindow, MenuItemClickInvoke) { Header = "Show logs session" },
+                            new MenuItemViewModel(OpenLogApplicationWindow, MenuItemClickInvoke) { Header = "Show logs application" },
+                            new MenuItemViewModel(ClearLogsSession, MenuItemClickInvoke) { Header = "Clear logs session" }
                         }
                     },
                     new MenuItemViewModel((string s1) => { }, () => { }, String.Empty) { Header = "Settings" ,
@@ -750,7 +751,7 @@ namespace Adirev.Models
             TIDatabasesName = $"Databases {DatabasesEntities.Where(x => x.IsSelected).Count()}/{DatabasesEntities.Count}";
             IsCheckedDatabases = DatabasesEntities.Where(x => x.IsSelected && x.Visibility == Visibility.Visible).Count() == DatabasesEntities.Where(x => x.Visibility == Visibility.Visible).Count();
         }
-        private void ClearLogs()
+        private void ClearLogsSession()
         {
             LoggerApplication.ClearLogs();
         }
@@ -950,7 +951,7 @@ namespace Adirev.Models
             FileManager.WriteToBinaryFile<ApplicationGlobalSettings>(pathSettings, ApplicationStatus.Settings);
         }
 
-        public void OpenLogWindow()
+        public void OpenLogSessionWindow()
         {
             LogWindow lw = new LogWindow();
 
@@ -960,6 +961,11 @@ namespace Adirev.Models
             lw.Top = mainWindow.Top + ((mainWindow.Height - lw.Height) / 2);
 
             lw.ShowDialog();
+        }
+
+        public void OpenLogApplicationWindow()
+        {
+            Process.Start("explorer.exe", ApplicationGlobalSettings.PathlogApplication);
         }
 
         private ObservableCollection<CheckBoxItem> SearchItems(ObservableCollection<CheckBoxItem> items, string searchText)

@@ -764,7 +764,7 @@ namespace Adirev.ViewModel
             {
                 if (openLogWindow == null) openLogWindow = new RelayCommand((object o) =>
                 {
-                    model.OpenLogWindow();
+                    model.OpenLogSessionWindow();
                 });
 
                 return openLogWindow;

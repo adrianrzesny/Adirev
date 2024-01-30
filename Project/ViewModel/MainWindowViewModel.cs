@@ -29,7 +29,7 @@ namespace Adirev.ViewModel
         public string ServerButtonChar { get => model.ServerButtonChar; }
         public string TextLog { get => model.TextLog; }
         public Logger LoggerApplication { get => model.LoggerApplication; }
-
+        public string Version { get => model.Version; }
         public bool IsEnabledWindow
         {
             get => model.IsEnabledWindow;
@@ -188,7 +188,7 @@ namespace Adirev.ViewModel
                 OnPropertyChanged(nameof(DatabaseViews));
             }
         }
-        
+
         public ObservableCollection<CheckBoxItem> DatabasesEntities
         {
             get => model.DatabasesEntities;
@@ -343,7 +343,7 @@ namespace Adirev.ViewModel
         public string FunctionsTextSearchFields
         {
             get => model.FunctionsTextSearchFields;
-            set 
+            set
             {
                 model.FunctionsTextSearchFields = value;
                 OnPropertyChanged(nameof(FunctionsTextSearchFields));
@@ -353,7 +353,7 @@ namespace Adirev.ViewModel
         public string ProceduresTextSearchFields
         {
             get => model.ProceduresTextSearchFields;
-            set 
+            set
             {
                 model.ProceduresTextSearchFields = value;
                 OnPropertyChanged(nameof(ProceduresTextSearchFields));
@@ -363,7 +363,7 @@ namespace Adirev.ViewModel
         public string TablesTextSearchFields
         {
             get => model.TablesTextSearchFields;
-            set 
+            set
             {
                 model.TablesTextSearchFields = value;
                 OnPropertyChanged(nameof(TablesTextSearchFields));
@@ -373,7 +373,7 @@ namespace Adirev.ViewModel
         public string TriggersTextSearchFields
         {
             get => model.TriggersTextSearchFields;
-            set 
+            set
             {
                 model.TriggersTextSearchFields = value;
                 OnPropertyChanged(nameof(TriggersTextSearchFields));
@@ -383,7 +383,7 @@ namespace Adirev.ViewModel
         public string ViewsTextSearchFields
         {
             get => model.ViewsTextSearchFields;
-            set 
+            set
             {
                 model.ViewsTextSearchFields = value;
                 OnPropertyChanged(nameof(ViewsTextSearchFields));
@@ -393,7 +393,7 @@ namespace Adirev.ViewModel
         public string DatabasesTextSearchFields
         {
             get => model.DatabasesTextSearchFields;
-            set 
+            set
             {
                 model.DatabasesTextSearchFields = value;
                 OnPropertyChanged(nameof(DatabasesTextSearchFields));
@@ -463,12 +463,12 @@ namespace Adirev.ViewModel
             OnPropertyChanged(nameof(ProgressBarVisibility));
             OnPropertyChanged(nameof(IsEnabledWindow));
         }
-        
+
         private void RefreshEntitiesDataBase()
         {
             OnPropertyChanged(nameof(EntitiesDataBase));
         }
-        
+
         private void RefreshEntityDataBaseSelected()
         {
             OnPropertyChanged(nameof(EntityDataBaseSelected));
@@ -483,7 +483,7 @@ namespace Adirev.ViewModel
         {
             OnPropertyChanged(nameof(IsCheckedViews));
         }
-        
+
         private void RefreshCheckboxSelectionAllDatabases()
         {
             OnPropertyChanged(nameof(IsCheckedDatabases));
@@ -691,7 +691,7 @@ namespace Adirev.ViewModel
                 return changeSelectionAllViews;
             }
         }
-        
+
         public ICommand ChangeSelectionAllDatabases
         {
 

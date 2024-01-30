@@ -1,3 +1,8 @@
+# 2.0.5
+[IMPROVED] The choice of saving the server export location has been secured
+[FIXED] Fixed UI loading errors
+[FIXED] Optimizations have been introduced for concurrent file access while writing
+
 # 2.0.4
 [NEW] Added a menu option to open the application logs folder
 

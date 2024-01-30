@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Adirev.Model;
 
 namespace Adirev.Service
@@ -14,7 +15,13 @@ namespace Adirev.Service
             file = DeleteInvalidFileNameChars(file);
             try
             {
-                System.IO.File.WriteAllText($@"{path}\{DatabaseManager.GetNameTypeScript(type)}\{file}.sql", contents);
+                if (!IsFileInUse($@"{path}\{DatabaseManager.GetNameTypeScript(type)}\{file}.sql"))
+                { System.IO.File.WriteAllText($@"{path}\{DatabaseManager.GetNameTypeScript(type)}\{file}.sql", contents); }
+                else
+                {
+                    Thread.Sleep(30000);
+                    System.IO.File.WriteAllText($@"{path}\{DatabaseManager.GetNameTypeScript(type)}\{file}.sql", contents);
+                }
             }
             catch (Exception ex)
             { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
@@ -25,7 +32,13 @@ namespace Adirev.Service
             file = DeleteInvalidFileNameChars(file);
             try
             {
-                System.IO.File.WriteAllText($@"{path}\{file}.{extension}", contents);
+                if (!IsFileInUse($@"{path}\{file}.{extension}"))
+                { System.IO.File.WriteAllText($@"{path}\{file}.{extension}", contents); }
+                else
+                {
+                    Thread.Sleep(30000);
+                    System.IO.File.WriteAllText($@"{path}\{file}.{extension}", contents);
+                }
             }
             catch (Exception ex)
             { Logger.SaveError(ex.Message, ex.InnerException?.Message, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.FullName + " -> " + System.Reflection.MethodBase.GetCurrentMethod()); }
@@ -46,9 +59,16 @@ namespace Adirev.Service
         {
             try
             {
-                if (File.Exists(path))
+                if (!IsFileInUse(path))
                 {
-                    File.Delete(path);
+                    if (File.Exists(path))
+                    { File.Delete(path); }
+                }
+                else
+                {
+                    Thread.Sleep(30000);
+                    if (File.Exists(path))
+                    { File.Delete(path); }
                 }
             }
             catch (Exception ex)
@@ -108,7 +128,7 @@ namespace Adirev.Service
 
                 foreach (var item in files)
                 {
-                    list.Add(item.Replace(@$"{path}\", "").Replace(".sql",""));
+                    list.Add(item.Replace(@$"{path}\", "").Replace(".sql", ""));
                 }
             }
             catch (Exception ex)
@@ -139,12 +159,28 @@ namespace Adirev.Service
         {
             string returnText = text;
 
-            foreach(var c in System.IO.Path.GetInvalidFileNameChars())
+            foreach (var c in System.IO.Path.GetInvalidFileNameChars())
             {
                 returnText = returnText.Replace(c.ToString(), "-");
             }
 
             return returnText;
+        }
+        static bool IsFileInUse(string filePath)
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                {
+                    // The file is not in use by another process
+                    return false;
+                }
+            }
+            catch (IOException)
+            {
+                // The file is in use by another process
+                return true;
+            }
         }
         #endregion
     }

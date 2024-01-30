@@ -17,8 +17,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="0" Background="{StaticResource WindowBackgound}">
-            <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Grid.Row="0" Margin="10,5,10,0">
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Grid.Row="0" Margin="10,5,10,0">
+            <ScrollViewer Grid.Row="0" Background="{StaticResource WindowBackgound}">
                 <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="{StaticResource WindowBackgound}" ItemsSource="{Binding ScheduleItems, Mode=TwoWay}">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
@@ -26,8 +26,8 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
-            </Border>
-        </ScrollViewer>
+            </ScrollViewer>
+        </Border>
         <Button Command="{Binding AddScheduleItem}" Content="+" Width="40" HorizontalAlignment="Left" Margin="10,5,30,0" Grid.Row="1"/>
         <Button Command="{Binding Save}" Content="Save" Width="100" HorizontalAlignment="Right" Margin="10,0,10,10" Grid.Row="3"/>
     </Grid>

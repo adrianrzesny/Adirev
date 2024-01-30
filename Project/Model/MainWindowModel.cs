@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Adirev.View;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Adirev.Models
 {
@@ -54,6 +55,7 @@ namespace Adirev.Models
         private System.Windows.Visibility itemsDataBaseVisibility;
         private System.Windows.Visibility entitiesDataBaseVisibility;
         private System.Windows.Visibility tabEntitiesDataBaseVisibility;
+        string pathFilesDatabase = string.Empty;
         #endregion
 
         #region Objects
@@ -308,6 +310,10 @@ namespace Adirev.Models
                 DatabasesEntities = SearchItems(DatabasesEntities, value);
             }
         }
+        public string Version
+        {
+            get => "Adirev " + GetAssemblyVersion();
+        }
         #endregion
 
         #region Events
@@ -373,7 +379,15 @@ namespace Adirev.Models
 
             GenerateNotifyIcon();
 
-            LoadMenuItem();
+            // Check if the current thread is an STA thread
+            if (Application.Current.Dispatcher.CheckAccess())
+            { LoadMenuItem(); }
+            else
+            {
+                // We are on another thread, use Dispatcher to submit the operation to the STA thread
+                Application.Current.Dispatcher.Invoke(() =>
+                { LoadMenuItem(); });
+            }
 
             LoadSession($@"{ApplicationGlobalSettings.PathHistoryApplication}\lastsesion.{ApplicationGlobalSettings.Extension}");
             LoadSettings(@$"{ApplicationGlobalSettings.PathSettingsApplication}\settings.{ApplicationGlobalSettings.Extension}");
@@ -404,8 +418,9 @@ namespace Adirev.Models
         {
             try
             {
+                string folderPath = AppDomain.CurrentDomain.BaseDirectory;
                 NotifyIcon = new System.Windows.Forms.NotifyIcon();
-                NotifyIcon.Icon = new System.Drawing.Icon(@"Images/Icon_app_1.ico");
+                NotifyIcon.Icon = new System.Drawing.Icon(@$"{folderPath}/Images/Icon_app_1.ico");
                 NotifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
                 NotifyIcon.ContextMenuStrip.Items.Add("Close", null, CloseApp);
                 NotifyIcon.MouseDoubleClick += NotifyIconMouseDoubleClick;
@@ -435,7 +450,6 @@ namespace Adirev.Models
 
             LoadMenuItem();
         }
-
         private void LoadMenuItem()
         {
             ObservableCollection<object> historyItems = new ObservableCollection<object>();
@@ -521,6 +535,8 @@ namespace Adirev.Models
             TabEntitiesDataBaseVisibility = System.Windows.Visibility.Collapsed;
             TIFunctionsIsSelected = true;
             TIDatabasesIsSelected = false;
+            Path = pathFilesDatabase;
+
         }
 
         private void SetModeWindowServer()
@@ -532,6 +548,8 @@ namespace Adirev.Models
             TabEntitiesDataBaseVisibility = System.Windows.Visibility.Visible;
             TIFunctionsIsSelected = false;
             TIDatabasesIsSelected = true;
+            pathFilesDatabase = Path;
+            Path = String.Empty;
         }
 
         private void SaveScript(DatabaseManager.TypeScript type, DatabaseManager.OpcionExport opcionExport, string databaseName, List<string> listToDownload = null)
@@ -588,7 +606,8 @@ namespace Adirev.Models
 
         private void LoadSession(string path)
         {
-            SetModeWindowDatabase();
+            if (ModeMainWindow != ModeWindow.ExportDatabase)
+            { SetModeWindowDatabase(); }
 
             if (Connected)
             { LoadDatabases(); }
@@ -683,7 +702,16 @@ namespace Adirev.Models
             LoggerApplication.AddLog($"Export completed ( {Server}.{EntityDataBaseSelected} -> {Path} )", true);
 
             SaveCurentSesion();
-            LoadMenuItem();
+
+            // Check if the current thread is an STA thread
+            if (Application.Current.Dispatcher.CheckAccess())
+            { LoadMenuItem(); }
+            else
+            {
+                // We are on another thread, use Dispatcher to submit the operation to the STA thread
+                Application.Current.Dispatcher.Invoke(() =>
+                { LoadMenuItem(); });
+            }
         }
 
         private void SaveScriptsServer()
@@ -814,6 +842,19 @@ namespace Adirev.Models
         #endregion
 
         #region Public Methods
+        public string GetAssemblyVersion()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            AssemblyInformationalVersionAttribute informationalVersionAttribute =
+                (AssemblyInformationalVersionAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyInformationalVersionAttribute));
+
+            AssemblyFileVersionAttribute fileVersionAttribute =
+                (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyFileVersionAttribute));
+
+            string version = informationalVersionAttribute?.InformationalVersion ?? fileVersionAttribute?.Version ?? "Brak dostępnej wersji";
+
+            return version;
+        }
         public void WindowClosing(CancelEventArgs e)
         {
             if (!ApplicationStatus.Closed && ApplicationStatus.Settings.HideWork)
